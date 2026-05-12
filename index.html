@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Viviana - 4 Años</title>
+    <title>Para Viviana - El Ritual</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,11 +16,12 @@
             background-size: cover; background-position: center;
         }
 
-        /* EFECTO CORTINA */
+        /* CORTINA DE SANGRE */
         #cortina {
             position: fixed; top: 0; left: -100%; width: 100%; height: 100%;
-            background: #600; z-index: 8000; transition: left 1s ease-in-out;
-            box-shadow: 0 0 100px #300;
+            background: #700; z-index: 9000; 
+            transition: left 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+            box-shadow: 0 0 100px #000; border-right: 5px solid #400;
         }
 
         #overlay {
@@ -45,6 +46,7 @@
             background: rgba(0,0,0,0.95); padding: 35px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 20px; 
             display: none; text-align: center; overflow-y: auto; scrollbar-width: none;
+            transition: opacity 2s;
         }
 
         #texto-dinamico, .nota-final {
@@ -59,7 +61,7 @@
 
         #frase-ingles {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 9000; display: none; font-family: 'Great Vibes', cursive; 
+            z-index: 9500; display: none; font-family: 'Great Vibes', cursive; 
             font-size: 3.5rem; color: #fff; font-weight: bold;
             text-shadow: 0 0 25px #f00, 0 0 45px #000; text-align: center; width: 90%;
         }
@@ -67,13 +69,14 @@
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
             color: #800; font-size: 1.1rem; z-index: 1500; display: none; text-align: right;
+            transition: opacity 2s;
         }
 
         .foto-nosotros {
             position: absolute; width: 180px; height: auto; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.8); border-radius: 5px;
             z-index: 1000; pointer-events: none; opacity: 0;
-            transition: opacity 3s ease-in-out;
+            transition: opacity 1.5s ease-in-out; /* Desvanecimiento individual */
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
@@ -91,7 +94,7 @@
 </div>
 
 <div class="boton-contenedor" id="btn-container">
-    <button id="boton-finalizar" onclick="animarCortina()">❤</button>
+    <button id="boton-finalizar" onclick="ritualConCortina()">❤</button>
     <div style="color:#600; font-size: 0.8rem; margin-top: 5px; font-family: 'Metal Mania';">SORPRESA</div>
 </div>
 
@@ -111,8 +114,8 @@ const misFotos = [];
 for (let n = 1; n <= 27; n++) { misFotos.push(`FOTOS/foto (${n}).jpg`); }
 const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
 
+const poemaTexto = `No me basta tu nombre, quiero el calcio de tus huesos, astillar tu resistencia con el filo de mis besos. Quiero abrirte los costados, hurgar en tu anatomía, y que mi hambre sea el mapa de tu dulce agonía...`;
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
-
 const fraseFinalIngles = "If you swear to love me, I swear to stay";
 const audio = document.getElementById('musica');
 
@@ -125,46 +128,68 @@ function iniciarRitual() {
     typePoema();
 }
 
-function animarCortina() {
+function ritualConCortina() {
     const cortina = document.getElementById('cortina');
-    cortina.style.left = '0'; // Cierra cortina
-    
+    cortina.style.left = '0'; 
     setTimeout(() => {
-        ritualFinal(); // Cambia contenido detrás
-        cortina.style.left = '100%'; // Abre cortina hacia el otro lado
-        setTimeout(() => { cortina.style.left = '-100%'; }, 1000); // Resetea posición
-    }, 1000);
+        audio.currentTime = 0;
+        audio.play();
+        document.getElementById("texto-dinamico").style.display = "none";
+        document.getElementById("btn-container").style.display = "none";
+        const nota = document.getElementById("nota-final");
+        nota.style.display = "block";
+        nota.innerHTML = cartaAmor;
+        setTimeout(() => {
+            cortina.style.left = '100%';
+            iniciarSecuenciaFinal();
+            setTimeout(() => {
+                cortina.style.transition = 'none';
+                cortina.style.left = '-100%';
+                setTimeout(() => { cortina.style.transition = 'left 0.8s cubic-bezier(0.7, 0, 0.3, 1)'; }, 100);
+            }, 1000);
+        }, 500);
+    }, 800); 
 }
 
-function ritualFinal() {
-    audio.currentTime = 0;
-    audio.play();
-    document.getElementById("texto-dinamico").style.display = "none";
-    document.getElementById("btn-container").style.display = "none";
-    const nota = document.getElementById("nota-final");
-    nota.style.display = "block";
-    nota.innerHTML = cartaAmor;
-    
+function iniciarSecuenciaFinal() {
     setTimeout(() => {
+        // Mostramos las fotos
         fotosMezcladas.forEach((ruta, index) => {
-            setTimeout(() => crearFoto(ruta), index * 2000);
+            setTimeout(() => crearFoto(ruta, index), index * 2000);
         });
 
-        const tiempoFinal = (fotosMezcladas.length * 2000) + 3000;
+        const tiempoTotalFotos = (fotosMezcladas.length * 2000);
         
+        // Iniciamos el desvanecimiento una por una y mensaje final
         setTimeout(() => {
-            // DESVANECER TODO
-            const elementos = document.querySelectorAll('.foto-nosotros, .contenedor-principal, .info-inferior');
-            elementos.forEach(el => { el.style.opacity = "0"; });
+            desvanecerFotosProgresivo();
+        }, tiempoTotalFotos + 3000);
 
-            // MOSTRAR FRASE
-            setTimeout(() => {
-                const fraseDiv = document.getElementById("frase-ingles");
-                fraseDiv.style.display = "block";
-                escribirFraseFinal(fraseDiv, fraseFinalIngles);
-            }, 3000);
-        }, tiempoFinal);
     }, 15000); 
+}
+
+function desvanecerFotosProgresivo() {
+    const fotos = document.querySelectorAll('.foto-nosotros');
+    const caja = document.getElementById('caja');
+    const info = document.getElementById('info');
+
+    // Desvanecer caja e info
+    caja.style.opacity = '0';
+    info.style.opacity = '0';
+
+    // Desvanecer fotos una tras otra rápido
+    fotos.forEach((foto, i) => {
+        setTimeout(() => {
+            foto.style.opacity = '0';
+        }, i * 300); // 300ms entre cada desaparición
+    });
+
+    // Mostrar frase final al terminar de desvanecer
+    setTimeout(() => {
+        const fraseDiv = document.getElementById("frase-ingles");
+        fraseDiv.style.display = "block";
+        escribirFraseFinal(fraseDiv, fraseFinalIngles);
+    }, (fotos.length * 300) + 1000);
 }
 
 function escribirFraseFinal(elemento, texto) {
@@ -179,12 +204,13 @@ function escribirFraseFinal(elemento, texto) {
     escribir();
 }
 
-function crearFoto(rutaArchivo) {
+function crearFoto(rutaArchivo, index) {
     const img = document.createElement("img");
     img.src = rutaArchivo + "?v=" + new Date().getTime();
     img.className = "foto-nosotros";
-    img.style.left = (Math.random() * 80) + "vw";
-    img.style.top = (Math.random() * 80) + "vh";
+    img.id = "foto-" + index;
+    img.style.left = (Math.random() * 75 + 5) + "vw";
+    img.style.top = (Math.random() * 75 + 5) + "vh";
     const rot = Math.floor(Math.random() * 60) - 30;
     img.style.setProperty('--r', rot + "deg");
     img.style.animation = "aparecerYQuedar 3s forwards";
@@ -193,11 +219,11 @@ function crearFoto(rutaArchivo) {
 }
 
 function typePoema() {
-    const p = "No me basta tu nombre, quiero el calcio de tus huesos, astillar tu resistencia con el filo de mis besos...";
     let i = 0;
+    const tDiv = document.getElementById("texto-dinamico");
     function t() {
-        if(i < p.length) {
-            document.getElementById("texto-dinamico").innerHTML += p.charAt(i); i++;
+        if(i < poemaTexto.length) {
+            tDiv.innerHTML += poemaTexto.charAt(i); i++;
             setTimeout(t, 70);
         }
     }
