@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Viviana - El Ritual</title>
+    <title>Para Viviana - Eternamente</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             background: #000; overflow: hidden; height: 100vh; width: 100vw;
             display: flex; justify-content: center; align-items: center;
@@ -16,29 +15,29 @@
             background-size: cover; background-position: center;
         }
 
-        /* CORTINA DE SANGRE */
-        #cortina {
-            position: fixed; top: 0; left: -100%; width: 100%; height: 100%;
+        /* CORTINA DOBLE LENTA (5 SEGUNDOS) */
+        .hoja {
+            position: fixed; top: 0; width: 50.5%; height: 100%;
             background: #700; z-index: 9000; 
-            transition: left 0.8s cubic-bezier(0.7, 0, 0.3, 1);
-            box-shadow: 0 0 100px #000; border-right: 5px solid #400;
+            transition: transform 5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 50px #000; border-style: solid; border-color: #400;
         }
+        #hoja-izq { left: 0; transform: translateX(-105%); border-right-width: 5px; }
+        #hoja-der { right: 0; transform: translateX(105%); border-left-width: 5px; }
 
         #overlay {
             position: fixed; inset: 0; background: #000; z-index: 7000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center; padding: 20px;
+            cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center;
         }
 
         .boton-contenedor {
             position: fixed; left: 30px; bottom: 50%; transform: translateY(50%);
             display: none; flex-direction: column; align-items: center; z-index: 1500;
         }
-        
         #boton-finalizar {
             font-size: 5rem; cursor: pointer; background: none; border: none;
-            color: #800; filter: drop-shadow(0 0 15px #f00);
-            animation: latido 0.8s infinite;
+            color: #800; filter: drop-shadow(0 0 15px #f00); animation: latido 0.8s infinite;
         }
 
         .contenedor-principal {
@@ -46,18 +45,14 @@
             background: rgba(0,0,0,0.95); padding: 35px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 20px; 
             display: none; text-align: center; overflow-y: auto; scrollbar-width: none;
-            transition: opacity 2s;
+            transition: opacity 2s ease-in-out;
         }
 
         #texto-dinamico, .nota-final {
             font-size: 1.25rem; font-family: 'Nosifer'; color: #b00;
             line-height: 1.7; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
-
-        .nota-final {
-            display: none; font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00;
-        }
+        .nota-final { display: none; font-family: 'Crimson Text', serif; font-style: italic; font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00; }
 
         #frase-ingles {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -66,17 +61,11 @@
             text-shadow: 0 0 25px #f00, 0 0 45px #000; text-align: center; width: 90%;
         }
 
-        .info-inferior {
-            position: fixed; bottom: 20px; right: 20px;
-            color: #800; font-size: 1.1rem; z-index: 1500; display: none; text-align: right;
-            transition: opacity 2s;
-        }
-
         .foto-nosotros {
             position: absolute; width: 180px; height: auto; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.8); border-radius: 5px;
             z-index: 1000; pointer-events: none; opacity: 0;
-            transition: opacity 1.5s ease-in-out; /* Desvanecimiento individual */
+            transition: opacity 1.5s ease-in-out;
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
@@ -85,12 +74,13 @@
 </head>
 <body>
 
-<div id="cortina"></div>
+<div id="hoja-izq" class="hoja"></div>
+<div id="hoja-der" class="hoja"></div>
 <div id="frase-ingles"></div>
 
 <div id="overlay" onclick="iniciarRitual()">
     <h1 style="font-size: 2.2rem;">TODO ESTO ES POR TI MI AMOR</h1>
-    <p style="color: #444; margin-top: 15px;">TÓCAME</p>
+    <p style="color: #444; font-family: 'Metal Mania'; font-size: 1.5rem; margin-top: 15px;">TÓCAME</p>
 </div>
 
 <div class="boton-contenedor" id="btn-container">
@@ -103,10 +93,6 @@
 <div class="contenedor-principal" id="caja">
     <div id="texto-dinamico"></div>
     <div id="nota-final" class="nota-final"></div>
-</div>
-
-<div class="info-inferior" id="info">
-    TE AMO VIVIANA<br>GRACIAS POR ESTOS 4 AÑOS
 </div>
 
 <script>
@@ -123,81 +109,71 @@ function iniciarRitual() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('caja').style.display = 'block';
     document.getElementById('btn-container').style.display = 'flex';
-    document.getElementById('info').style.display = 'block';
     audio.play();
     typePoema();
 }
 
 function ritualConCortina() {
-    const cortina = document.getElementById('cortina');
-    cortina.style.left = '0'; 
+    const izq = document.getElementById('hoja-izq');
+    const der = document.getElementById('hoja-der');
+    izq.style.transform = 'translateX(0)';
+    der.style.transform = 'translateX(0)';
+
     setTimeout(() => {
-        audio.currentTime = 0;
-        audio.play();
+        audio.currentTime = 0; audio.play();
         document.getElementById("texto-dinamico").style.display = "none";
         document.getElementById("btn-container").style.display = "none";
         const nota = document.getElementById("nota-final");
-        nota.style.display = "block";
-        nota.innerHTML = cartaAmor;
+        nota.style.display = "block"; nota.innerHTML = cartaAmor;
+
         setTimeout(() => {
-            cortina.style.left = '100%';
-            iniciarSecuenciaFinal();
-            setTimeout(() => {
-                cortina.style.transition = 'none';
-                cortina.style.left = '-100%';
-                setTimeout(() => { cortina.style.transition = 'left 0.8s cubic-bezier(0.7, 0, 0.3, 1)'; }, 100);
-            }, 1000);
-        }, 500);
-    }, 800); 
+            izq.style.transform = 'translateX(-105%)';
+            der.style.transform = 'translateX(105%)';
+            
+            // ORDEN CORREGIDO: Primero espera para leer la carta, luego fotos
+            iniciarSecuenciaFotos();
+        }, 1000);
+    }, 5000); 
 }
 
-function iniciarSecuenciaFinal() {
+function iniciarSecuenciaFotos() {
+    // 15 segundos para leer la carta
     setTimeout(() => {
-        // Mostramos las fotos
         fotosMezcladas.forEach((ruta, index) => {
             setTimeout(() => crearFoto(ruta, index), index * 2000);
         });
 
-        const tiempoTotalFotos = (fotosMezcladas.length * 2000);
-        
-        // Iniciamos el desvanecimiento una por una y mensaje final
-        setTimeout(() => {
-            desvanecerFotosProgresivo();
-        }, tiempoTotalFotos + 3000);
-
+        // Al terminar todas las fotos + 2 segundos, desvanecer todo
+        const tiempoFinalFotos = (fotosMezcladas.length * 2000) + 2000;
+        setTimeout(desvanecimientoFinal, tiempoFinalFotos);
     }, 15000); 
 }
 
-function desvanecerFotosProgresivo() {
+function desvanecimientoFinal() {
     const fotos = document.querySelectorAll('.foto-nosotros');
     const caja = document.getElementById('caja');
-    const info = document.getElementById('info');
 
-    // Desvanecer caja e info
-    caja.style.opacity = '0';
-    info.style.opacity = '0';
-
-    // Desvanecer fotos una tras otra rápido
+    // Desvanecer fotos una a una rápido
     fotos.forEach((foto, i) => {
-        setTimeout(() => {
-            foto.style.opacity = '0';
-        }, i * 300); // 300ms entre cada desaparición
+        setTimeout(() => { foto.style.opacity = '0'; }, i * 150);
     });
 
-    // Mostrar frase final al terminar de desvanecer
+    // Desvanecer la carta y mostrar texto final
     setTimeout(() => {
-        const fraseDiv = document.getElementById("frase-ingles");
-        fraseDiv.style.display = "block";
-        escribirFraseFinal(fraseDiv, fraseFinalIngles);
-    }, (fotos.length * 300) + 1000);
+        caja.style.opacity = '0';
+        setTimeout(() => {
+            const fraseDiv = document.getElementById("frase-ingles");
+            fraseDiv.style.display = "block";
+            escribirFraseFinal(fraseDiv, fraseFinalIngles);
+        }, 2000);
+    }, (fotos.length * 150) + 500);
 }
 
 function escribirFraseFinal(elemento, texto) {
     let j = 0;
     function escribir() {
         if (j < texto.length) {
-            elemento.innerHTML += texto.charAt(j);
-            j++;
+            elemento.innerHTML += texto.charAt(j); j++;
             setTimeout(escribir, 100);
         }
     }
@@ -208,7 +184,6 @@ function crearFoto(rutaArchivo, index) {
     const img = document.createElement("img");
     img.src = rutaArchivo + "?v=" + new Date().getTime();
     img.className = "foto-nosotros";
-    img.id = "foto-" + index;
     img.style.left = (Math.random() * 75 + 5) + "vw";
     img.style.top = (Math.random() * 75 + 5) + "vh";
     const rot = Math.floor(Math.random() * 60) - 30;
@@ -219,8 +194,7 @@ function crearFoto(rutaArchivo, index) {
 }
 
 function typePoema() {
-    let i = 0;
-    const tDiv = document.getElementById("texto-dinamico");
+    let i = 0; const tDiv = document.getElementById("texto-dinamico");
     function t() {
         if(i < poemaTexto.length) {
             tDiv.innerHTML += poemaTexto.charAt(i); i++;
@@ -232,3 +206,4 @@ function typePoema() {
 </script>
 </body>
 </html>
+
