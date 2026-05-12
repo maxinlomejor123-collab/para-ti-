@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Eternamente Tuya - Viviana</title>
+    <title>Eternamente - Viviana</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
@@ -20,26 +20,21 @@
             cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center;
         }
 
-        /* CORAZÓN OSCURO (BOTÓN) */
         .boton-contenedor {
             position: fixed; left: 40px; bottom: 50%; transform: translateY(50%);
             display: none; flex-direction: column; align-items: center; z-index: 500;
         }
         #boton-finalizar {
             width: 80px; height: 80px; cursor: pointer; background: none; border: none;
-            filter: drop-shadow(0 0 15px #f00) brightness(0.4) sepia(1) hue-rotate(-50deg); 
+            filter: drop-shadow(0 0 15px #f00) brightness(0.3) sepia(1) hue-rotate(-50deg); 
             animation: latido 0.8s infinite;
-        }
-        .etiqueta-sorpresa {
-            color: #600; font-family: 'Metal Mania'; font-size: 1rem; margin-top: 10px;
-            text-shadow: 0 0 5px #000; text-align: center; width: 120px;
         }
 
         .contenedor-principal {
-            z-index: 10; width: 85%; max-width: 700px; max-height: 70vh;
+            z-index: 10; width: 85%; max-width: 700px;
             background: rgba(0,0,0,0.95); padding: 40px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 15px; 
-            display: none; overflow-y: auto; text-align: center;
+            display: none; text-align: center; position: relative;
         }
 
         #texto-dinamico, .nota-final {
@@ -49,27 +44,30 @@
 
         .nota-final {
             display: none; font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00;
+            font-size: 2rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
-        /* SANGRE CHORREANDO COSTADOS */
+        /* SANGRE LENTA LATERAL */
         .sangre-costado {
             position: fixed; top: 0; width: 0; height: 100%;
-            background: #600; z-index: 800; transition: width 4s ease-in;
+            background: #500; z-index: 800; transition: width 10s ease-in-out;
             pointer-events: none;
         }
-        #sangre-izq { left: 0; box-shadow: 10px 0 30px #200; }
-        #sangre-der { right: 0; box-shadow: -10px 0 30px #200; }
+        #sangre-izq { left: 0; box-shadow: 20px 0 50px #200; }
+        #sangre-der { right: 0; box-shadow: -20px 0 50px #200; }
 
-        .info-inferior {
-            position: fixed; bottom: 20px; right: 20px;
-            font-family: 'Metal Mania'; color: #800; font-size: 1.3rem;
-            z-index: 50; display: none; text-align: right;
+        /* FOTOS */
+        .foto-nosotros {
+            position: absolute; width: 190px; height: auto; border: 4px solid #fff;
+            box-shadow: 0 0 25px rgba(255,0,0,0.6); border-radius: 5px;
+            z-index: 900; opacity: 0; pointer-events: none;
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        @keyframes caer { to { transform: translateY(110vh); } }
-        @keyframes levitar { 0% { transform: translateY(105vh); opacity: 1; } 100% { transform: translateY(-15vh); opacity: 0; } }
+        @keyframes aparecerFoto { 
+            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 
+            100% { opacity: 1; transform: scale(1) rotate(0deg); } 
+        }
     </style>
 </head>
 <body>
@@ -78,13 +76,13 @@
 <div id="sangre-der" class="sangre-costado"></div>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 2.5rem;">PARA TI MI AMOR</h1>
+    <h1 style="font-size: 2.5rem;">TODO ESTO ES POR TI MI AMOR</h1>
     <p style="font-family: 'Metal Mania'; color: #444; font-size: 1.5rem;">TÓCAME</p>
 </div>
 
 <div class="boton-contenedor" id="btn-container">
-    <img id="boton-finalizar" src="https://flaticon.com" onclick="ritualFinal()" alt="corazon">
-    <div class="etiqueta-sorpresa">TOCA AQUÍ PARA<br>UNA SORPRESA</div>
+    <img id="boton-finalizar" src="https://flaticon.com" onclick="ritualFinal()">
+    <div style="color:#600; font-family:'Metal Mania'; margin-top:10px;">SORPRESA</div>
 </div>
 
 <audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
@@ -94,12 +92,16 @@
     <div id="nota-final" class="nota-final"></div>
 </div>
 
-<div class="info-inferior" id="info">
-    TE AMO VIVIANA<br>GRACIAS POR ESTOS 4 AÑOS
-    <div id="contador" style="color: #f00; font-family: 'Nosifer'; font-size: 0.8rem;"></div>
-</div>
-
 <script>
+// Generar nombres de las 27 fotos
+const misFotos = [];
+for (let n = 1; n <= 27; n++) {
+    misFotos.push(`FOTOS/foto ${n}.jpg`);
+}
+
+// Mezclar fotos aleatoriamente para no repetir en el mismo orden
+const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
+
 const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
 astillar tu resistencia con el filo de mis besos.
 Quiero abrirte los costados, hurgar en tu anatomía,
@@ -115,39 +117,45 @@ const audio = document.getElementById('musica');
 function iniciarRitual() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('caja').style.display = 'block';
-    document.getElementById('info').style.display = 'block';
     document.getElementById('btn-container').style.display = 'flex';
     audio.play();
     type();
-    setInterval(caerSangre, 80);
-    setInterval(crearCorazon, 500);
-    setInterval(actualizarContador, 1000);
 }
 
 function ritualFinal() {
+    // 1. Reiniciar música y limpiar poema
     audio.currentTime = 0;
     audio.play();
     document.getElementById("texto-dinamico").style.display = "none";
     document.getElementById("btn-container").style.display = "none";
-    document.getElementById("info").style.display = "none";
+    
+    // 2. Mostrar mensaje bonito (Carta de Amor)
     const nota = document.getElementById("nota-final");
     nota.style.display = "block";
     nota.innerHTML = cartaAmor;
+    
+    // 3. A los 15 segundos: Cerrar sangre realista y soltar fotos
     setTimeout(() => {
+        // Cerrar sangre
         document.getElementById("sangre-izq").style.width = "50%";
         document.getElementById("sangre-der").style.width = "50%";
-    }, 1000);
+        
+        // Empezar a mostrar las fotos aleatoriamente sobre la sangre
+        fotosMezcladas.forEach((ruta, index) => {
+            setTimeout(() => crearFoto(ruta), index * 1000);
+        });
+    }, 15000); // 15 segundos de espera
 }
 
-function actualizarContador() {
-    const fechaMeta = new Date('February 10, 2027 00:00:00').getTime();
-    const ahora = new Date().getTime();
-    const dif = fechaMeta - ahora;
-    const d = Math.floor(dif / (1000 * 60 * 60 * 24));
-    const h = Math.floor((dif % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((dif % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((dif % (1000 * 60)) / 1000);
-    document.getElementById("contador").innerHTML = `Faltan: ${d}d ${h}h ${m}m ${s}s`;
+function crearFoto(rutaArchivo) {
+    const img = document.createElement("img");
+    img.src = rutaArchivo;
+    img.className = "foto-nosotros";
+    img.style.left = (Math.random() * 60 + 10) + "vw";
+    img.style.top = (Math.random() * 60 + 10) + "vh";
+    img.style.animation = "aparecerFoto 2s forwards";
+    img.onerror = function() { this.style.display = 'none'; };
+    document.body.appendChild(img);
 }
 
 let i = 0;
@@ -157,31 +165,7 @@ function type() {
         setTimeout(type, 70);
     }
 }
-
-function caerSangre() {
-    const s = document.createElement("div");
-    s.style.position = "absolute";
-    s.style.background = "#600";
-    s.style.width = "2px";
-    s.style.height = "40px";
-    s.style.left = Math.random() * 100 + "vw";
-    s.style.top = "-50px";
-    s.style.animation = "caer " + (Math.random() * 2 + 1) + "s linear forwards";
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 3000);
-}
-
-function crearCorazon() {
-    const c = document.createElement("div");
-    c.style.position = "absolute";
-    c.style.color = Math.random() > 0.5 ? "#400" : "#600";
-    c.style.fontSize = "2rem";
-    c.innerHTML = "🖤";
-    c.style.left = Math.random() * 100 + "vw";
-    c.style.animation = "levitar " + (Math.random() * 3 + 4) + "s linear forwards";
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 7000);
-}
 </script>
 </body>
 </html>
+
