@@ -6,24 +6,24 @@
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
-            margin: 0; background: #000; overflow: hidden;
-            height: 100vh; display: flex; justify-content: center; align-items: center;
+            margin: 0; background: #000; overflow: hidden; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(circle, transparent 0%, #000 90%), 
                               url('https://unsplash.com');
             background-size: cover; background-position: center;
-            animation: glitch 5s infinite;
+            animation: glitch 5s infinite; cursor: crosshair;
         }
 
         #overlay {
             position: fixed; inset: 0; background: #000; z-index: 100;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; font-family: 'Nosifer'; color: #600;
+            cursor: pointer; font-family: 'Nosifer'; color: #600; text-align: center;
         }
 
         .contenedor-poema {
-            z-index: 10; width: 80%; text-align: center; display: none;
-            background: rgba(0,0,0,0.85); padding: 50px;
-            border: 2px solid #300; box-shadow: 0 0 100px #600;
+            z-index: 10; width: 80%; max-width: 800px; text-align: center; display: none;
+            background: rgba(0,0,0,0.9); padding: 50px; border: 2px solid #400;
+            box-shadow: 0 0 100px #600; border-radius: 15px;
         }
 
         #texto-poema {
@@ -33,13 +33,13 @@
 
         @keyframes glitch {
             0% { filter: contrast(1) brightness(1); }
-            1% { filter: contrast(1.5) brightness(0.8) sepia(1); }
+            1% { filter: contrast(1.2) brightness(0.9) sepia(0.5); }
             2% { filter: contrast(1) brightness(1); }
         }
 
         .sangre-caida {
-            position: absolute; background: #400; width: 3px; height: 30px;
-            animation: caer linear forwards; opacity: 0.6;
+            position: absolute; background: #400; width: 2px; height: 35px;
+            animation: caer linear forwards; opacity: 0.7; z-index: 5;
         }
 
         @keyframes caer { to { transform: translateY(110vh); } }
@@ -47,13 +47,13 @@
 </head>
 <body>
 
-<div id="overlay" onclick="iniciar()">
-    <h1 style="font-size: 3rem;">CONSUMIR</h1>
-    <p style="font-family: 'Metal Mania'; color: #333;">(Haz clic para iniciar el sacrificio)</p>
+<div id="overlay" onclick="iniciarRitual()">
+    <h1 style="font-size: 3.5rem; margin-bottom: 10px;">CONSUMIR</h1>
+    <p style="font-family: 'Metal Mania'; color: #444; letter-spacing: 2px;">(Haz clic para iniciar el sacrificio)</p>
 </div>
 
-<!-- Usamos un link de audio de prueba, cámbialo por el tuyo si subes el MP3 -->
-<audio id="musica" src="https://soundhelix.com" loop></audio>
+<!-- Nombre exacto del archivo que subiste -->
+<audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
 
 <div class="contenedor-poema" id="caja">
     <div id="texto-poema"></div>
@@ -85,21 +85,26 @@ sabrás que eres yo, y que ya nada es frío.
 Porque amarte, mi vida, es matarte un momento,
 para que seas mi sangre, mi luz y mi aliento.`;
 
-function iniciar() {
+function iniciarRitual() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('caja').style.display = 'block';
-    document.getElementById('musica').play();
+    
+    const cancion = document.getElementById('musica');
+    cancion.play();
+
     let i = 0;
     const t = document.getElementById("texto-poema");
+    
     function type() {
         if(i < poema.length) {
             t.innerHTML += poema.charAt(i);
             i++;
-            setTimeout(type, 75);
+            setTimeout(type, 80); // Velocidad de escritura
         }
     }
+    
     type();
-    setInterval(caerSangre, 80);
+    setInterval(caerSangre, 120); // Lluvia de sangre
 }
 
 function caerSangre() {
@@ -107,10 +112,10 @@ function caerSangre() {
     s.classList.add("sangre-caida");
     s.style.left = Math.random() * 100 + "vw";
     s.style.top = "-50px";
-    const d = Math.random() * 3 + 1.5;
-    s.style.animationDuration = d + "s";
+    const duracion = Math.random() * 3 + 1.5;
+    s.style.animationDuration = duracion + "s";
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), d * 1000);
+    setTimeout(() => s.remove(), duracion * 1000);
 }
 </script>
 
