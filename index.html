@@ -64,13 +64,13 @@
             text-shadow: 0 0 25px #f00, 0 0 45px #000; text-align: center; width: 90%;
         }
 
-        /* INFO INFERIOR FINAL */
+        /* INFO INFERIOR FINAL - AJUSTE PC */
         .info-inferior-final {
-            position: fixed; bottom: 20px; right: 20px;
-            color: #800; font-size: 1.1rem; z-index: 9900; display: none; text-align: right;
-            font-family: 'Metal Mania';
+            position: fixed; bottom: 30px; right: 30px;
+            color: #800; font-size: 1.4rem; z-index: 9950; display: none; text-align: right;
+            font-family: 'Metal Mania'; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;
         }
-        #contador-final { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
+        #contador-final { color: #f00; font-family: 'Nosifer'; font-size: 0.9rem; margin-top: 8px; }
 
         .foto-nosotros {
             position: absolute; width: 180px; height: auto; border: 4px solid #fff;
@@ -90,6 +90,7 @@
         @media (max-width: 768px) {
             #texto-dinamico, .nota-final { font-size: 1rem; }
             #frase-ingles { font-size: 2.2rem; }
+            .info-inferior-final { bottom: 20px; right: 20px; font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -200,7 +201,6 @@ function cerrarCortinaNegra() {
         const fraseDiv = document.getElementById("frase-ingles");
         fraseDiv.style.display = "block";
         escribirProgresivo(fraseDiv, fraseFinalIngles, 100, () => {
-            // Activar mensaje de feliz mes y contador al terminar frase principal
             const infoFinal = document.getElementById("info-final");
             infoFinal.style.display = "block";
             escribirProgresivo(document.getElementById("texto-feliz-mes"), "FELIZ MES TE AMO MUCHO", 70, () => {
@@ -233,8 +233,12 @@ function lanzarCorazonFinal() {
     c.innerHTML = Math.random() > 0.5 ? "❤️" : "🖤";
     c.style.left = (Math.random() * 100) + "vw";
     document.body.appendChild(c);
-    const stopY = Math.random() * 12 + 1;
-    setTimeout(() => { c.style.transform = `translateY(-${100 - stopY}vh)`; }, 50);
+    
+    // POSICIÓN ALEATORIA EN TODA LA PANTALLA (Detención dispersa)
+    const stopY = Math.random() * 95 + 2; // Se detienen entre el 2% y 97% de la pantalla
+    setTimeout(() => { 
+        c.style.transform = `translateY(-${100 - stopY}vh)`; 
+    }, 50);
 }
 
 function crearFoto(rutaArchivo, index) {
@@ -265,4 +269,3 @@ function typePoema() {
 </script>
 </body>
 </html>
-
