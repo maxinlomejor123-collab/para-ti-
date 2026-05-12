@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Para Viviana - Siempre Juntos</title>
+    <title>Para Viviana - 4 Años</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
@@ -20,14 +20,15 @@
             cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center;
         }
 
-        /* CORAZÓN GÓTICO EN SVG (Nunca se rompe) */
         .boton-contenedor {
             position: fixed; left: 40px; bottom: 50%; transform: translateY(50%);
             display: none; flex-direction: column; align-items: center; z-index: 1500;
         }
+        
         #boton-finalizar {
-            width: 80px; height: 80px; cursor: pointer; background: none; border: none;
-            filter: drop-shadow(0 0 10px #f00); animation: latido 0.8s infinite;
+            font-size: 5.5rem; cursor: pointer; background: none; border: none;
+            color: #800; filter: drop-shadow(0 0 15px #f00);
+            animation: latido 0.8s infinite; line-height: 1;
         }
 
         .contenedor-principal {
@@ -47,7 +48,6 @@
             font-size: 2rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
-        /* INFO Y CONTADOR */
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
             font-family: 'Metal Mania'; color: #800; font-size: 1.3rem;
@@ -55,14 +55,23 @@
         }
         #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
 
+        /* FOTOS (Se quedan fijas con opacity 1 al final) */
         .foto-nosotros {
             position: absolute; width: 220px; height: auto; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(255,255,255,0.8); border-radius: 5px;
-            z-index: 1000; opacity: 0; pointer-events: none;
+            z-index: 1000; pointer-events: none; opacity: 0;
+            animation: aparecerYQuedar 3s forwards;
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        @keyframes aparecerFoto { 0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
+        
+        /* Animación para que las fotos aparezcan y se queden */
+        @keyframes aparecerYQuedar { 
+            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 
+            100% { opacity: 1; transform: scale(1) rotate(0deg); } 
+        }
+
+        @keyframes glitch { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.1) brightness(0.9); } }
     </style>
 </head>
 <body>
@@ -73,11 +82,7 @@
 </div>
 
 <div class="boton-contenedor" id="btn-container">
-    <button id="boton-finalizar" onclick="ritualFinal()">
-        <svg viewBox="0 0 32 32" fill="#4a0000">
-            <path d="M16 28.5L14.1 26.6C7.3 20.4 3 16.5 3 11.5 3 7.4 6.4 4 10.5 4 12.8 4 15 5.1 16.5 6.8 18 5.1 20.2 4 22.5 4 26.6 4 30 7.4 30 11.5 30 16.5 25.7 20.4 18.9 26.7L16 28.5Z" />
-        </svg>
-    </button>
+    <button id="boton-finalizar" onclick="ritualFinal()">❤</button>
     <div style="color:#600; font-family:'Metal Mania'; margin-top:10px;">SORPRESA</div>
 </div>
 
@@ -94,10 +99,12 @@
 </div>
 
 <script>
+// Generar rutas: FOTOS/foto (1).jpg hasta FOTOS/foto (27).jpg
 const misFotos = [];
 for (let n = 1; n <= 27; n++) {
-    misFotos.push(`FOTOS/foto ${n}.jpg`);
+    misFotos.push(`FOTOS/foto (${n}).jpg`);
 }
+// Mezclamos el orden para que siempre sea sorpresa
 const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
 
 const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
@@ -123,14 +130,19 @@ function iniciarRitual() {
 }
 
 function ritualFinal() {
-    audio.currentTime = 0;
+    audio.currentTime = 0; // Reinicia la canción
     audio.play();
+    
+    // Limpia el poema y quita el botón
     document.getElementById("texto-dinamico").style.display = "none";
     document.getElementById("btn-container").style.display = "none";
+    
+    // Muestra la carta de amor
     const nota = document.getElementById("nota-final");
     nota.style.display = "block";
     nota.innerHTML = cartaAmor;
     
+    // Espera 15 segundos y empieza a soltar las fotos que se quedarán fijas
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
             setTimeout(() => crearFoto(ruta), index * 600);
@@ -153,10 +165,18 @@ function crearFoto(rutaArchivo) {
     const img = document.createElement("img");
     img.src = rutaArchivo;
     img.className = "foto-nosotros";
-    img.style.left = (Math.random() * 65 + 5) + "vw";
-    img.style.top = (Math.random() * 65 + 5) + "vh";
-    img.style.animation = "aparecerFoto 2.5s forwards";
+    
+    // Posiciones aleatorias por toda la pantalla
+    img.style.left = (Math.random() * 75 + 2) + "vw";
+    img.style.top = (Math.random() * 75 + 2) + "vh";
+    
+    // Rotación aleatoria para que parezcan fotos tiradas
+    const rot = Math.random() * 40 - 20;
+    img.style.transform = `rotate(${rot}deg)`;
+    
+    // Si la foto no existe o tiene error, no muestra nada
     img.onerror = function() { this.style.display = 'none'; };
+    
     document.body.appendChild(img);
 }
 
