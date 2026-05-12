@@ -14,7 +14,6 @@
             background-image: radial-gradient(circle, transparent 0%, #000 95%), 
                               url('https://unsplash.com');
             background-size: cover; background-position: center;
-            font-family: 'Metal Mania', cursive;
         }
 
         #overlay {
@@ -38,8 +37,7 @@
             z-index: 100; width: 85%; max-width: 700px; max-height: 70vh;
             background: rgba(0,0,0,0.95); padding: 35px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 20px; 
-            display: none; text-align: center; overflow-y: auto;
-            scrollbar-width: none;
+            display: none; text-align: center; overflow-y: auto; scrollbar-width: none;
         }
         .contenedor-principal::-webkit-scrollbar { display: none; }
 
@@ -53,13 +51,12 @@
             font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
-        /* FRASE FINAL EN INGLÉS */
+        /* FRASE FINAL EN INGLÉS - CENTRO TOTAL */
         #frase-ingles {
-            position: fixed; z-index: 5000; display: none;
-            font-family: 'Great Vibes', cursive; font-size: 3.5rem;
-            color: #fff; text-shadow: 0 0 20px #f00, 0 0 40px #000;
-            text-align: center; width: 90%; opacity: 0;
-            transition: opacity 3s ease-in-out;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 5000; display: none; font-family: 'Great Vibes', cursive; 
+            font-size: 3.5rem; color: #fff; font-weight: bold;
+            text-shadow: 0 0 20px #f00, 0 0 40px #000; text-align: center; width: 90%;
         }
 
         .info-inferior {
@@ -68,18 +65,16 @@
         }
         #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
 
-        /* FOTOS */
         .foto-nosotros {
             position: absolute; width: 180px; height: auto; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.8); border-radius: 5px;
             z-index: 1000; pointer-events: none; opacity: 0;
-            transition: opacity 4s ease-in-out; /* Para el desvanecimiento final */
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         @keyframes aparecerYQuedar { 
-            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); filter: brightness(0); } 
-            100% { opacity: 1; transform: scale(1) rotate(var(--r)); filter: brightness(1); } 
+            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 
+            100% { opacity: 1; transform: scale(1) rotate(var(--r)); } 
         }
 
         @media (max-width: 768px) {
@@ -90,7 +85,7 @@
 </head>
 <body>
 
-<div id="frase-ingles">"If you swear to love me, I swear to stay"</div>
+<div id="frase-ingles"></div>
 
 <div id="overlay" onclick="iniciarRitual()">
     <h1 style="font-size: 2.2rem;">TODO ESTO ES POR TI MI AMOR</h1>
@@ -99,7 +94,7 @@
 
 <div class="boton-contenedor" id="btn-container">
     <button id="boton-finalizar" onclick="ritualFinal()">❤</button>
-    <div style="color:#600; font-size: 0.8rem; margin-top: 5px;">SORPRESA</div>
+    <div style="color:#600; font-size: 0.8rem; margin-top: 5px; font-family: 'Metal Mania';">SORPRESA</div>
 </div>
 
 <audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
@@ -124,9 +119,14 @@ const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
 const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
 astillar tu resistencia con el filo de mis besos.
 Quiero abrirte los costados, hurgar en tu anatomía,
-y que mi hambre sea el mapa de tu dulce agonía...`;
+y que mi hambre sea el mapa de tu dulce agonía.
+
+Te amo con la rabia del que muere de ayuno,
+buscando en tus entrañas un refugio oportuno...`;
 
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
+
+const fraseFinalIngles = "If you swear to love me, I swear to stay";
 
 const audio = document.getElementById('musica');
 
@@ -149,49 +149,54 @@ function ritualFinal() {
     nota.style.display = "block";
     nota.innerHTML = cartaAmor;
     
-    const tiempoEntreFotos = 2000;
-    const tiempoEsperaInicial = 15000;
-
+    // Fotos cada 2 segundos después de la carta
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
-            setTimeout(() => crearFoto(ruta), index * tiempoEntreFotos);
+            setTimeout(() => crearFoto(ruta), index * 2000);
         });
 
-        // CALCULAR CUANDO TERMINAN TODAS LAS FOTOS
-        const tiempoTotalFotos = fotosMezcladas.length * tiempoEntreFotos;
+        // Al terminar las fotos (27 * 2seg), empieza el mensaje final
+        const tiempoFinal = (fotosMezcladas.length * 2000) + 3000;
         
-        // MOSTRAR FRASE FINAL Y DESVANECER FOTOS
         setTimeout(() => {
-            // Mostrar frase en inglés
-            const frase = document.getElementById("frase-ingles");
-            frase.style.display = "block";
-            setTimeout(() => { frase.style.opacity = "1"; }, 100);
+            const fraseDiv = document.getElementById("frase-ingles");
+            fraseDiv.style.display = "block";
+            escribirFraseFinal(fraseDiv, fraseFinalIngles);
+        }, tiempoFinal);
 
-            // Desvanecer todas las fotos y la carta
-            const elementosADesvanecer = document.querySelectorAll('.foto-nosotros, .contenedor-principal, .info-inferior');
-            elementosADesvanecer.forEach(el => {
-                el.style.transition = "opacity 5s ease-in-out";
-                el.style.opacity = "0";
-            });
-        }, tiempoTotalFotos + 3000);
+    }, 15000); 
+}
 
-    }, tiempoEsperaInicial); 
+function escribirFraseFinal(elemento, texto) {
+    let j = 0;
+    function escribir() {
+        if (j < texto.length) {
+            elemento.innerHTML += texto.charAt(j);
+            j++;
+            setTimeout(escribir, 100);
+        } else {
+            // Cuando termina de escribir, desvanece todo lo demás
+            setTimeout(() => {
+                const elementos = document.querySelectorAll('.foto-nosotros, .contenedor-principal, .info-inferior');
+                elementos.forEach(el => {
+                    el.style.transition = "opacity 4s ease-in-out";
+                    el.style.opacity = "0";
+                });
+            }, 2000);
+        }
+    }
+    escribir();
 }
 
 function crearFoto(rutaArchivo) {
     const img = document.createElement("img");
     img.src = rutaArchivo + "?v=" + new Date().getTime();
     img.className = "foto-nosotros";
-    
-    const posX = Math.floor(Math.random() * 80);
-    const posY = Math.floor(Math.random() * 80);
-    const rotacion = Math.floor(Math.random() * 60) - 30;
-    
-    img.style.left = posX + "vw";
-    img.style.top = posY + "vh";
-    img.style.setProperty('--r', rotacion + "deg");
+    img.style.left = (Math.random() * 80) + "vw";
+    img.style.top = (Math.random() * 80) + "vh";
+    const rot = Math.floor(Math.random() * 60) - 30;
+    img.style.setProperty('--r', rot + "deg");
     img.style.animation = "aparecerYQuedar 3s forwards";
-    
     img.onerror = function() { this.style.display = 'none'; };
     document.body.appendChild(img);
 }
@@ -217,4 +222,3 @@ function type() {
 </script>
 </body>
 </html>
-
