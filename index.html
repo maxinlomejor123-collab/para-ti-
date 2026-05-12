@@ -2,16 +2,16 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Devoción Visceral</title>
+    <title>4 Años - Viviana</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
             margin: 0; background: #000; overflow: hidden; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle, transparent 0%, #000 90%), 
+            background-image: radial-gradient(circle, transparent 0%, #000 95%), 
                               url('https://unsplash.com');
             background-size: cover; background-position: center;
-            animation: glitch 5s infinite; cursor: crosshair;
+            animation: glitch 4s infinite; cursor: crosshair;
         }
 
         #overlay {
@@ -20,43 +20,69 @@
             cursor: pointer; font-family: 'Nosifer'; color: #600; text-align: center;
         }
 
+        /* Contenedor con Scroll Gótico */
         .contenedor-poema {
-            z-index: 10; width: 80%; max-width: 800px; text-align: center; display: none;
-            background: rgba(0,0,0,0.9); padding: 50px; border: 2px solid #400;
-            box-shadow: 0 0 100px #600; border-radius: 15px;
+            z-index: 10; width: 85%; max-width: 700px; max-height: 70vh;
+            background: rgba(0,0,0,0.95); padding: 40px; border: 2px solid #600;
+            box-shadow: 0 0 100px #900; border-radius: 15px; 
+            display: none; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #600 #000;
         }
+
+        /* Estilo del Scroll para Chrome/Safari */
+        .contenedor-poema::-webkit-scrollbar { width: 8px; }
+        .contenedor-poema::-webkit-scrollbar-track { background: #000; }
+        .contenedor-poema::-webkit-scrollbar-thumb { background: #600; border-radius: 10px; }
 
         #texto-poema {
-            font-size: 1.4rem; font-family: 'Nosifer'; color: #900;
-            line-height: 1.8; text-shadow: 0 0 15px #000; white-space: pre-wrap;
+            font-size: 1.4rem; font-family: 'Nosifer'; color: #b00;
+            line-height: 1.8; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
 
-        @keyframes glitch {
-            0% { filter: contrast(1) brightness(1); }
-            1% { filter: contrast(1.2) brightness(0.9) sepia(0.5); }
-            2% { filter: contrast(1) brightness(1); }
+        /* Mensaje y Contador */
+        .info-inferior {
+            position: fixed; bottom: 20px; right: 20px;
+            font-family: 'Metal Mania'; color: #800; font-size: 1.3rem;
+            text-shadow: 0 0 10px #f00; z-index: 50; display: none;
+            text-align: right; pointer-events: none; background: rgba(0,0,0,0.6); padding: 10px;
+        }
+
+        #contador { color: #ff0000; font-family: 'Nosifer'; font-size: 1rem; margin-top: 5px; }
+
+        .corazon {
+            position: absolute; font-size: 2.5rem; color: #600;
+            pointer-events: none; z-index: 5; animation: levitar linear forwards;
+            filter: drop-shadow(0 0 15px #f00);
         }
 
         .sangre-caida {
-            position: absolute; background: #400; width: 2px; height: 35px;
-            animation: caer linear forwards; opacity: 0.7; z-index: 5;
+            position: absolute; background: #600; width: 3px; height: 50px;
+            animation: caer linear forwards; opacity: 0.9; z-index: 5;
         }
 
         @keyframes caer { to { transform: translateY(110vh); } }
+        @keyframes levitar {
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes glitch { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.2) brightness(0.9); } }
     </style>
 </head>
 <body>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 3.5rem; margin-bottom: 10px;">CONSUMIR</h1>
-    <p style="font-family: 'Metal Mania'; color: #444; letter-spacing: 2px;">(Haz clic para iniciar el sacrificio)</p>
+    <h1 style="font-size: 3rem;">NUESTRO PACTO</h1>
+    <p style="font-family: 'Metal Mania'; color: #333;">(Haz clic, Viviana)</p>
 </div>
 
-<!-- Nombre exacto del archivo que subiste -->
 <audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
 
 <div class="contenedor-poema" id="caja">
     <div id="texto-poema"></div>
+</div>
+
+<div class="info-inferior" id="info">
+    TE AMO VIVIANA<br>FELIZ MES<br>GRACIAS POR ESTOS CASI 4 AÑOS
+    <div id="contador">Cargando tiempo...</div>
 </div>
 
 <script>
@@ -88,23 +114,36 @@ para que seas mi sangre, mi luz y mi aliento.`;
 function iniciarRitual() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('caja').style.display = 'block';
-    
-    const cancion = document.getElementById('musica');
-    cancion.play();
+    document.getElementById('info').style.display = 'block';
+    document.getElementById('musica').play();
 
     let i = 0;
     const t = document.getElementById("texto-poema");
-    
     function type() {
         if(i < poema.length) {
             t.innerHTML += poema.charAt(i);
             i++;
-            setTimeout(type, 80); // Velocidad de escritura
+            setTimeout(type, 65);
         }
     }
-    
     type();
-    setInterval(caerSangre, 120); // Lluvia de sangre
+    setInterval(caerSangre, 60);
+    setInterval(crearCorazon, 350);
+    actualizarContador();
+    setInterval(actualizarContador, 1000);
+}
+
+function actualizarContador() {
+    const fechaMeta = new Date('February 10, 2027 00:00:00').getTime();
+    const ahora = new Date().getTime();
+    const dif = fechaMeta - ahora;
+
+    const d = Math.floor(dif / (1000 * 60 * 60 * 24));
+    const h = Math.floor((dif % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((dif % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((dif % (1000 * 60)) / 1000);
+
+    document.getElementById("contador").innerHTML = `Faltan: ${d}d ${h}h ${m}m ${s}s para nuestro año`;
 }
 
 function caerSangre() {
@@ -112,12 +151,22 @@ function caerSangre() {
     s.classList.add("sangre-caida");
     s.style.left = Math.random() * 100 + "vw";
     s.style.top = "-50px";
-    const duracion = Math.random() * 3 + 1.5;
-    s.style.animationDuration = duracion + "s";
+    const dur = Math.random() * 1.5 + 1;
+    s.style.animationDuration = dur + "s";
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), duracion * 1000);
+    setTimeout(() => s.remove(), dur * 1000);
+}
+
+function crearCorazon() {
+    const c = document.createElement("div");
+    c.classList.add("corazon");
+    c.innerHTML = Math.random() > 0.5 ? "🖤" : "❤️";
+    c.style.left = Math.random() * 100 + "vw";
+    const dur = Math.random() * 3 + 4;
+    c.style.animationDuration = dur + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), dur * 1000);
 }
 </script>
-
 </body>
 </html>
