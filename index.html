@@ -16,8 +16,15 @@
             background-size: cover; background-position: center;
         }
 
+        /* EFECTO CORTINA */
+        #cortina {
+            position: fixed; top: 0; left: -100%; width: 100%; height: 100%;
+            background: #600; z-index: 8000; transition: left 1s ease-in-out;
+            box-shadow: 0 0 100px #300;
+        }
+
         #overlay {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
+            position: fixed; inset: 0; background: #000; z-index: 7000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center; padding: 20px;
         }
@@ -39,7 +46,6 @@
             box-shadow: 0 0 100px #900; border-radius: 20px; 
             display: none; text-align: center; overflow-y: auto; scrollbar-width: none;
         }
-        .contenedor-principal::-webkit-scrollbar { display: none; }
 
         #texto-dinamico, .nota-final {
             font-size: 1.25rem; font-family: 'Nosifer'; color: #b00;
@@ -51,40 +57,32 @@
             font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
-        /* FRASE FINAL EN INGLÉS - CENTRO TOTAL */
         #frase-ingles {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 5000; display: none; font-family: 'Great Vibes', cursive; 
+            z-index: 9000; display: none; font-family: 'Great Vibes', cursive; 
             font-size: 3.5rem; color: #fff; font-weight: bold;
-            text-shadow: 0 0 20px #f00, 0 0 40px #000; text-align: center; width: 90%;
+            text-shadow: 0 0 25px #f00, 0 0 45px #000; text-align: center; width: 90%;
         }
 
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
             color: #800; font-size: 1.1rem; z-index: 1500; display: none; text-align: right;
         }
-        #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
 
         .foto-nosotros {
             position: absolute; width: 180px; height: auto; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.8); border-radius: 5px;
             z-index: 1000; pointer-events: none; opacity: 0;
+            transition: opacity 3s ease-in-out;
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        @keyframes aparecerYQuedar { 
-            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 
-            100% { opacity: 1; transform: scale(1) rotate(var(--r)); } 
-        }
-
-        @media (max-width: 768px) {
-            .foto-nosotros { width: 130px; }
-            #frase-ingles { font-size: 2.2rem; }
-        }
+        @keyframes aparecerYQuedar { 0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 100% { opacity: 1; transform: scale(1) rotate(var(--r)); } }
     </style>
 </head>
 <body>
 
+<div id="cortina"></div>
 <div id="frase-ingles"></div>
 
 <div id="overlay" onclick="iniciarRitual()">
@@ -93,7 +91,7 @@
 </div>
 
 <div class="boton-contenedor" id="btn-container">
-    <button id="boton-finalizar" onclick="ritualFinal()">❤</button>
+    <button id="boton-finalizar" onclick="animarCortina()">❤</button>
     <div style="color:#600; font-size: 0.8rem; margin-top: 5px; font-family: 'Metal Mania';">SORPRESA</div>
 </div>
 
@@ -106,28 +104,16 @@
 
 <div class="info-inferior" id="info">
     TE AMO VIVIANA<br>GRACIAS POR ESTOS 4 AÑOS
-    <div id="contador"></div>
 </div>
 
 <script>
 const misFotos = [];
-for (let n = 1; n <= 27; n++) {
-    misFotos.push(`FOTOS/foto (${n}).jpg`);
-}
+for (let n = 1; n <= 27; n++) { misFotos.push(`FOTOS/foto (${n}).jpg`); }
 const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
-
-const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
-astillar tu resistencia con el filo de mis besos.
-Quiero abrirte los costados, hurgar en tu anatomía,
-y que mi hambre sea el mapa de tu dulce agonía.
-
-Te amo con la rabia del que muere de ayuno,
-buscando en tus entrañas un refugio oportuno...`;
 
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
 
 const fraseFinalIngles = "If you swear to love me, I swear to stay";
-
 const audio = document.getElementById('musica');
 
 function iniciarRitual() {
@@ -136,8 +122,18 @@ function iniciarRitual() {
     document.getElementById('btn-container').style.display = 'flex';
     document.getElementById('info').style.display = 'block';
     audio.play();
-    type();
-    setInterval(actualizarContador, 1000);
+    typePoema();
+}
+
+function animarCortina() {
+    const cortina = document.getElementById('cortina');
+    cortina.style.left = '0'; // Cierra cortina
+    
+    setTimeout(() => {
+        ritualFinal(); // Cambia contenido detrás
+        cortina.style.left = '100%'; // Abre cortina hacia el otro lado
+        setTimeout(() => { cortina.style.left = '-100%'; }, 1000); // Resetea posición
+    }, 1000);
 }
 
 function ritualFinal() {
@@ -149,21 +145,25 @@ function ritualFinal() {
     nota.style.display = "block";
     nota.innerHTML = cartaAmor;
     
-    // Fotos cada 2 segundos después de la carta
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
             setTimeout(() => crearFoto(ruta), index * 2000);
         });
 
-        // Al terminar las fotos (27 * 2seg), empieza el mensaje final
         const tiempoFinal = (fotosMezcladas.length * 2000) + 3000;
         
         setTimeout(() => {
-            const fraseDiv = document.getElementById("frase-ingles");
-            fraseDiv.style.display = "block";
-            escribirFraseFinal(fraseDiv, fraseFinalIngles);
-        }, tiempoFinal);
+            // DESVANECER TODO
+            const elementos = document.querySelectorAll('.foto-nosotros, .contenedor-principal, .info-inferior');
+            elementos.forEach(el => { el.style.opacity = "0"; });
 
+            // MOSTRAR FRASE
+            setTimeout(() => {
+                const fraseDiv = document.getElementById("frase-ingles");
+                fraseDiv.style.display = "block";
+                escribirFraseFinal(fraseDiv, fraseFinalIngles);
+            }, 3000);
+        }, tiempoFinal);
     }, 15000); 
 }
 
@@ -174,15 +174,6 @@ function escribirFraseFinal(elemento, texto) {
             elemento.innerHTML += texto.charAt(j);
             j++;
             setTimeout(escribir, 100);
-        } else {
-            // Cuando termina de escribir, desvanece todo lo demás
-            setTimeout(() => {
-                const elementos = document.querySelectorAll('.foto-nosotros, .contenedor-principal, .info-inferior');
-                elementos.forEach(el => {
-                    el.style.transition = "opacity 4s ease-in-out";
-                    el.style.opacity = "0";
-                });
-            }, 2000);
         }
     }
     escribir();
@@ -201,23 +192,16 @@ function crearFoto(rutaArchivo) {
     document.body.appendChild(img);
 }
 
-function actualizarContador() {
-    const fechaMeta = new Date('February 10, 2027 00:00:00').getTime();
-    const ahora = new Date().getTime();
-    const dif = fechaMeta - ahora;
-    const d = Math.floor(dif / (1000 * 60 * 60 * 24));
-    const h = Math.floor((dif % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((dif % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((dif % (1000 * 60)) / 1000);
-    document.getElementById("contador").innerHTML = `Faltan: ${d}d ${h}h ${m}m ${s}s`;
-}
-
-let i = 0;
-function type() {
-    if(i < poemaBrutal.length) {
-        document.getElementById("texto-dinamico").innerHTML += poemaBrutal.charAt(i); i++;
-        setTimeout(type, 70);
+function typePoema() {
+    const p = "No me basta tu nombre, quiero el calcio de tus huesos, astillar tu resistencia con el filo de mis besos...";
+    let i = 0;
+    function t() {
+        if(i < p.length) {
+            document.getElementById("texto-dinamico").innerHTML += p.charAt(i); i++;
+            setTimeout(t, 70);
+        }
     }
+    t();
 }
 </script>
 </body>
