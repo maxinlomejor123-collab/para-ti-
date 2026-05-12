@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>4 Años - Viviana</title>
+    <title>Para Viviana - Siempre Tú</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
@@ -20,69 +20,71 @@
             cursor: pointer; font-family: 'Nosifer'; color: #600; text-align: center;
         }
 
-        /* Contenedor con Scroll Gótico */
-        .contenedor-poema {
+        .contenedor-principal {
             z-index: 10; width: 85%; max-width: 700px; max-height: 70vh;
             background: rgba(0,0,0,0.95); padding: 40px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 15px; 
-            display: none; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #600 #000;
+            display: none; overflow-y: auto; text-align: center;
+            scrollbar-width: thin; scrollbar-color: #600 #000;
         }
 
-        /* Estilo del Scroll para Chrome/Safari */
-        .contenedor-poema::-webkit-scrollbar { width: 8px; }
-        .contenedor-poema::-webkit-scrollbar-track { background: #000; }
-        .contenedor-poema::-webkit-scrollbar-thumb { background: #600; border-radius: 10px; }
-
-        #texto-poema {
+        #texto-dinamico {
             font-size: 1.4rem; font-family: 'Nosifer'; color: #b00;
             line-height: 1.8; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
 
-        /* Mensaje y Contador */
+        .mensaje-final {
+            font-family: 'Crimson Text', serif; font-style: italic;
+            font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px #f00;
+            display: none; animation: fadeIn 3s;
+        }
+
+        /* Botón Secreto Inferior Izquierda */
+        #boton-secreto {
+            position: fixed; bottom: 5px; left: 5px; width: 30px; height: 30px;
+            background: rgba(20, 0, 0, 0.3); border: none; cursor: pointer;
+            z-index: 300; display: none; border-radius: 50%;
+        }
+
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
             font-family: 'Metal Mania'; color: #800; font-size: 1.3rem;
-            text-shadow: 0 0 10px #f00; z-index: 50; display: none;
-            text-align: right; pointer-events: none; background: rgba(0,0,0,0.6); padding: 10px;
+            text-shadow: 0 0 10px #f00; z-index: 50; display: none; text-align: right;
         }
 
-        #contador { color: #ff0000; font-family: 'Nosifer'; font-size: 1rem; margin-top: 5px; }
-
-        .corazon {
-            position: absolute; font-size: 2.5rem; color: #600;
-            pointer-events: none; z-index: 5; animation: levitar linear forwards;
-            filter: drop-shadow(0 0 15px #f00);
+        #inundacion {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%;
+            background: #600; z-index: 200; transition: bottom 4s ease-in;
         }
 
-        .sangre-caida {
-            position: absolute; background: #600; width: 3px; height: 50px;
-            animation: caer linear forwards; opacity: 0.9; z-index: 5;
-        }
+        .corazon { position: absolute; font-size: 2.5rem; z-index: 5; animation: levitar linear forwards; }
+        .sangre-caida { position: absolute; background: #600; width: 3px; height: 50px; animation: caer linear forwards; z-index: 5; }
 
         @keyframes caer { to { transform: translateY(110vh); } }
-        @keyframes levitar {
-            0% { transform: translateY(105vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
-        }
-        @keyframes glitch { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.2) brightness(0.9); } }
+        @keyframes levitar { 0% { transform: translateY(105vh); opacity: 1; } 100% { transform: translateY(-15vh); opacity: 0; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
+
+<div id="inundacion"></div>
+<button id="boton-secreto" onclick="saltarAlFinal()"></button>
 
 <div id="overlay" onclick="iniciarRitual()">
     <h1 style="font-size: 3rem;">NUESTRO PACTO</h1>
     <p style="font-family: 'Metal Mania'; color: #333;">(Haz clic, Viviana)</p>
 </div>
 
-<audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
+<audio id="musica" src="Seven Tears Are Flowing to the River.mp3"></audio>
 
-<div class="contenedor-poema" id="caja">
-    <div id="texto-poema"></div>
+<div class="contenedor-principal" id="caja">
+    <div id="texto-dinamico"></div>
+    <div id="mensaje-final" class="mensaje-final"></div>
 </div>
 
 <div class="info-inferior" id="info">
-    TE AMO VIVIANA<br>FELIZ MES<br>GRACIAS POR ESTOS CASI 4 AÑOS
-    <div id="contador">Cargando tiempo...</div>
+    TE AMO VIVIANA<br>GRACIAS POR ESTOS 4 AÑOS
+    <div id="contador" style="color: #f00; font-family: 'Nosifer'; font-size: 0.8rem;"></div>
 </div>
 
 <script>
@@ -111,39 +113,57 @@ sabrás que eres yo, y que ya nada es frío.
 Porque amarte, mi vida, es matarte un momento,
 para que seas mi sangre, mi luz y mi aliento.`;
 
+const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. 
+Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, 
+mi mundo no ha dejado de girar en torno a ti. 
+Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, 
+jamás dejaré de verte con estos mismos ojos de amor, 
+porque eres y serás siempre el latido que me mantiene vivo.`;
+
+const audio = document.getElementById('musica');
+
 function iniciarRitual() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('caja').style.display = 'block';
     document.getElementById('info').style.display = 'block';
-    document.getElementById('musica').play();
+    document.getElementById('boton-secreto').style.display = 'block';
+    audio.play();
 
     let i = 0;
-    const t = document.getElementById("texto-poema");
+    const t = document.getElementById("texto-dinamico");
     function type() {
         if(i < poema.length) {
-            t.innerHTML += poema.charAt(i);
-            i++;
-            setTimeout(type, 65);
+            t.innerHTML += poema.charAt(i); i++;
+            setTimeout(type, 70);
         }
     }
     type();
     setInterval(caerSangre, 60);
     setInterval(crearCorazon, 350);
-    actualizarContador();
     setInterval(actualizarContador, 1000);
 }
+
+function saltarAlFinal() {
+    audio.currentTime = audio.duration - 1; // Salta al último segundo
+}
+
+audio.onended = function() {
+    document.getElementById("texto-dinamico").style.display = "none";
+    const final = document.getElementById("mensaje-final");
+    final.style.display = "block";
+    final.innerHTML = cartaAmor;
+    setTimeout(() => { document.getElementById("inundacion").style.bottom = "0"; }, 6000);
+};
 
 function actualizarContador() {
     const fechaMeta = new Date('February 10, 2027 00:00:00').getTime();
     const ahora = new Date().getTime();
     const dif = fechaMeta - ahora;
-
     const d = Math.floor(dif / (1000 * 60 * 60 * 24));
     const h = Math.floor((dif % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const m = Math.floor((dif % (1000 * 60 * 60)) / (1000 * 60));
     const s = Math.floor((dif % (1000 * 60)) / 1000);
-
-    document.getElementById("contador").innerHTML = `Faltan: ${d}d ${h}h ${m}m ${s}s para nuestro año`;
+    document.getElementById("contador").innerHTML = `Faltan: ${d}d ${h}h ${m}m ${s}s`;
 }
 
 function caerSangre() {
