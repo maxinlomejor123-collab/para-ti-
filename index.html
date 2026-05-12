@@ -43,16 +43,17 @@
         }
 
         .contenedor-principal {
-            z-index: 100; width: 85%; max-width: 700px; max-height: 80vh;
+            z-index: 100; width: 85%; max-width: 700px; height: 75vh;
             background: rgba(0,0,0,0.95); padding: 35px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 20px; 
-            display: none; text-align: center; overflow-y: auto; scrollbar-width: none;
+            display: none; text-align: center; overflow-y: scroll;
+            scrollbar-width: none;
         }
         .contenedor-principal::-webkit-scrollbar { display: none; }
 
         #texto-dinamico, .nota-final {
-            font-size: 1.2rem; font-family: 'Nosifer'; color: #b00;
-            line-height: 1.6; text-shadow: 0 0 20px #000; white-space: pre-wrap;
+            font-size: 1.25rem; font-family: 'Nosifer'; color: #b00;
+            line-height: 1.7; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
         .nota-final { display: none; font-family: 'Crimson Text', serif; font-style: italic; font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px #f00; }
 
@@ -62,6 +63,14 @@
             font-size: 3.5rem; color: #fff; font-weight: bold;
             text-shadow: 0 0 25px #f00, 0 0 45px #000; text-align: center; width: 90%;
         }
+
+        /* INFO INFERIOR FINAL */
+        .info-inferior-final {
+            position: fixed; bottom: 20px; right: 20px;
+            color: #800; font-size: 1.1rem; z-index: 9900; display: none; text-align: right;
+            font-family: 'Metal Mania';
+        }
+        #contador-final { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
 
         .foto-nosotros {
             position: absolute; width: 180px; height: auto; border: 4px solid #fff;
@@ -80,7 +89,6 @@
 
         @media (max-width: 768px) {
             #texto-dinamico, .nota-final { font-size: 1rem; }
-            .foto-nosotros { width: 120px; }
             #frase-ingles { font-size: 2.2rem; }
         }
     </style>
@@ -93,6 +101,11 @@
 <div id="final-der" class="cortina-hoja"></div>
 
 <div id="frase-ingles"></div>
+
+<div id="info-final" class="info-inferior-final">
+    <div id="texto-feliz-mes"></div>
+    <div id="contador-final"></div>
+</div>
 
 <div id="overlay" onclick="iniciarRitual()">
     <h1 style="font-size: 2rem; font-family: 'Nosifer';">PARA TI MI AMOR</h1>
@@ -154,21 +167,17 @@ function iniciarRitual() {
 }
 
 function ritualConCortina() {
-    const izq = document.getElementById('hoja-izq');
-    const der = document.getElementById('hoja-der');
-    izq.style.transform = 'translateX(0)';
-    der.style.transform = 'translateX(0)';
-
+    document.getElementById('hoja-izq').style.transform = 'translateX(0)';
+    document.getElementById('hoja-der').style.transform = 'translateX(0)';
     setTimeout(() => {
         audio.currentTime = 0; audio.play();
         document.getElementById("texto-dinamico").style.display = "none";
         document.getElementById("btn-container").style.display = "none";
         const nota = document.getElementById("nota-final");
         nota.style.display = "block"; nota.innerHTML = cartaAmor;
-
         setTimeout(() => {
-            izq.style.transform = 'translateX(-105%)';
-            der.style.transform = 'translateX(105%)';
+            document.getElementById('hoja-izq').style.transform = 'translateX(-105%)';
+            document.getElementById('hoja-der').style.transform = 'translateX(105%)';
             iniciarSecuenciaFotos();
         }, 1000);
     }, 5000); 
@@ -187,14 +196,35 @@ function iniciarSecuenciaFotos() {
 function cerrarCortinaNegra() {
     document.getElementById('final-izq').style.transform = 'translateX(0)';
     document.getElementById('final-der').style.transform = 'translateX(0)';
-
     setTimeout(() => {
         const fraseDiv = document.getElementById("frase-ingles");
         fraseDiv.style.display = "block";
-        escribirFraseFinal(fraseDiv, fraseFinalIngles);
-        // LLUVIA MASIVA DE CORAZONES (80ms entre cada uno)
-        setInterval(lanzarCorazonFinal, 80);
+        escribirProgresivo(fraseDiv, fraseFinalIngles, 100, () => {
+            // Activar mensaje de feliz mes y contador al terminar frase principal
+            const infoFinal = document.getElementById("info-final");
+            infoFinal.style.display = "block";
+            escribirProgresivo(document.getElementById("texto-feliz-mes"), "FELIZ MES TE AMO MUCHO", 70, () => {
+                setInterval(actualizarContadorFinal, 1000);
+            });
+            setInterval(lanzarCorazonFinal, 80);
+        });
     }, 5000);
+}
+
+function actualizarContadorFinal() {
+    const fechaMeta = new Date('February 10, 2027 00:00:00').getTime();
+    const dif = fechaMeta - new Date().getTime();
+    const d = Math.floor(dif / 86400000), h = Math.floor((dif % 86400000) / 3600000), m = Math.floor((dif % 3600000) / 60000), s = Math.floor((dif % 60000) / 1000);
+    document.getElementById("contador-final").innerHTML = `Faltan: ${d}d ${h}h ${m}m ${s}s`;
+}
+
+function escribirProgresivo(elemento, texto, velocidad, callback) {
+    let j = 0;
+    function e() {
+        if (j < texto.length) { elemento.innerHTML += texto.charAt(j); j++; setTimeout(e, velocidad); }
+        else if (callback) callback();
+    }
+    e();
 }
 
 function lanzarCorazonFinal() {
@@ -203,23 +233,8 @@ function lanzarCorazonFinal() {
     c.innerHTML = Math.random() > 0.5 ? "❤️" : "🖤";
     c.style.left = (Math.random() * 100) + "vw";
     document.body.appendChild(c);
-    
-    // Parada aleatoria en el techo (para el efecto de apilado)
     const stopY = Math.random() * 12 + 1;
-    setTimeout(() => { 
-        c.style.transform = `translateY(-${100 - stopY}vh)`; 
-    }, 50);
-}
-
-function escribirFraseFinal(elemento, texto) {
-    let j = 0;
-    function escribir() {
-        if (j < texto.length) {
-            elemento.innerHTML += texto.charAt(j); j++;
-            setTimeout(escribir, 100);
-        }
-    }
-    escribir();
+    setTimeout(() => { c.style.transform = `translateY(-${100 - stopY}vh)`; }, 50);
 }
 
 function crearFoto(rutaArchivo, index) {
@@ -237,10 +252,11 @@ function crearFoto(rutaArchivo, index) {
 
 function typePoema() {
     let i = 0; const tDiv = document.getElementById("texto-dinamico");
+    const contenedor = document.getElementById("caja");
     function t() {
         if(i < poemaCompleto.length) {
             tDiv.innerHTML += poemaCompleto.charAt(i); i++;
-            document.getElementById('caja').scrollTop = document.getElementById('caja').scrollHeight;
+            contenedor.scrollTop = contenedor.scrollHeight;
             setTimeout(t, 70);
         }
     }
@@ -249,3 +265,4 @@ function typePoema() {
 </script>
 </body>
 </html>
+
