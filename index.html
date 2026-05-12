@@ -15,15 +15,24 @@
         }
 
         #overlay {
-            position: fixed; inset: 0; background: #000; z-index: 100;
+            position: fixed; inset: 0; background: #000; z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center;
         }
 
-        #splash-inicial {
-            position: fixed; inset: 0; background: radial-gradient(circle, #600 20%, transparent 70%);
-            z-index: 150; display: none; pointer-events: none;
-            animation: splashFade 1.5s forwards;
+        /* CORAZÓN OSCURO (BOTÓN) */
+        .boton-contenedor {
+            position: fixed; left: 40px; bottom: 50%; transform: translateY(50%);
+            display: none; flex-direction: column; align-items: center; z-index: 500;
+        }
+        #boton-finalizar {
+            width: 80px; height: 80px; cursor: pointer; background: none; border: none;
+            filter: drop-shadow(0 0 15px #f00) brightness(0.4) sepia(1) hue-rotate(-50deg); 
+            animation: latido 0.8s infinite;
+        }
+        .etiqueta-sorpresa {
+            color: #600; font-family: 'Metal Mania'; font-size: 1rem; margin-top: 10px;
+            text-shadow: 0 0 5px #000; text-align: center; width: 120px;
         }
 
         .contenedor-principal {
@@ -33,41 +42,24 @@
             display: none; overflow-y: auto; text-align: center;
         }
 
-        #texto-dinamico {
+        #texto-dinamico, .nota-final {
             font-size: 1.4rem; font-family: 'Nosifer'; color: #b00;
             line-height: 1.8; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
 
-        /* CORAZÓN OSCURO Y ROJIZO */
-        .boton-contenedor {
-            position: fixed; left: 30px; bottom: 50%; transform: translateY(50%);
-            display: none; flex-direction: column; align-items: center; z-index: 300;
-        }
-        #boton-finalizar {
-            font-size: 4rem; cursor: pointer; background: none; border: none;
-            filter: drop-shadow(0 0 15px #300) brightness(0.5) contrast(1.5); 
-            animation: latido 0.8s infinite; color: #4a0000;
-        }
-        .etiqueta-sorpresa {
-            color: #600; font-family: 'Metal Mania'; font-size: 1rem; margin-top: 10px;
-            text-shadow: 0 0 5px #000; text-align: center;
-        }
-
-        /* NOTA ROMÁNTICA FINAL */
         .nota-final {
             display: none; font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px #f00;
-            padding: 30px; z-index: 400; position: relative;
+            font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
-        /* SANGRE CHORREANDO DE LOS COSTADOS */
+        /* SANGRE CHORREANDO COSTADOS */
         .sangre-costado {
             position: fixed; top: 0; width: 0; height: 100%;
-            background: #600; z-index: 500; transition: width 6s ease-in;
-            box-shadow: 0 0 50px #300; pointer-events: none;
+            background: #600; z-index: 800; transition: width 4s ease-in;
+            pointer-events: none;
         }
-        #sangre-izq { left: 0; border-right: 10px solid #200; }
-        #sangre-der { right: 0; border-left: 10px solid #200; }
+        #sangre-izq { left: 0; box-shadow: 10px 0 30px #200; }
+        #sangre-der { right: 0; box-shadow: -10px 0 30px #200; }
 
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
@@ -75,25 +67,23 @@
             z-index: 50; display: none; text-align: right;
         }
 
-        @keyframes splashFade { 0% { opacity: 0; scale: 0.5; } 20% { opacity: 1; scale: 1.2; } 100% { opacity: 0; scale: 2; } }
-        @keyframes latido { 0%, 100% { scale: 1; } 50% { scale: 1.15; } }
+        @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         @keyframes caer { to { transform: translateY(110vh); } }
         @keyframes levitar { 0% { transform: translateY(105vh); opacity: 1; } 100% { transform: translateY(-15vh); opacity: 0; } }
     </style>
 </head>
 <body>
 
-<div id="splash-inicial"></div>
 <div id="sangre-izq" class="sangre-costado"></div>
 <div id="sangre-der" class="sangre-costado"></div>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 2.5rem; margin-bottom: 20px;">PARA TI MI AMOR</h1>
+    <h1 style="font-size: 2.5rem;">PARA TI MI AMOR</h1>
     <p style="font-family: 'Metal Mania'; color: #444; font-size: 1.5rem;">TÓCAME</p>
 </div>
 
 <div class="boton-contenedor" id="btn-container">
-    <button id="boton-finalizar" onclick="ritualFinal()">🖤</button>
+    <img id="boton-finalizar" src="https://flaticon.com" onclick="ritualFinal()" alt="corazon">
     <div class="etiqueta-sorpresa">TOCA AQUÍ PARA<br>UNA SORPRESA</div>
 </div>
 
@@ -113,50 +103,40 @@
 const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
 astillar tu resistencia con el filo de mis besos.
 Quiero abrirte los costados, hurgar en tu anatomía,
-y que mi hambre sea el mapa de tu dulce agonía... (Poema continúa)`;
+y que mi hambre sea el mapa de tu dulce agonía.
+
+Te amo con la rabia del que muere de ayuno,
+buscando en tus entrañas un refugio oportuno...`;
 
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
 
 const audio = document.getElementById('musica');
 
 function iniciarRitual() {
-    document.getElementById('splash-inicial').style.display = 'block';
-    setTimeout(() => {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('caja').style.display = 'block';
-        document.getElementById('info').style.display = 'block';
-        document.getElementById('btn-container').style.display = 'flex';
-        audio.play();
-        type();
-        setInterval(caerSangre, 50);
-        setInterval(crearCorazon, 300);
-        setInterval(actualizarContador, 1000);
-    }, 500);
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('caja').style.display = 'block';
+    document.getElementById('info').style.display = 'block';
+    document.getElementById('btn-container').style.display = 'flex';
+    audio.play();
+    type();
+    setInterval(caerSangre, 80);
+    setInterval(crearCorazon, 500);
+    setInterval(actualizarContador, 1000);
 }
 
 function ritualFinal() {
-    // 1. Reiniciar canción
     audio.currentTime = 0;
     audio.play();
-
-    // 2. Limpiar pantalla
     document.getElementById("texto-dinamico").style.display = "none";
     document.getElementById("btn-container").style.display = "none";
     document.getElementById("info").style.display = "none";
-
-    // 3. Mostrar nota romántica
     const nota = document.getElementById("nota-final");
     nota.style.display = "block";
     nota.innerHTML = cartaAmor;
-
-    // 4. Inundación de sangre desde los costados
     setTimeout(() => {
         document.getElementById("sangre-izq").style.width = "50%";
         document.getElementById("sangre-der").style.width = "50%";
-        setTimeout(() => {
-            document.body.style.backgroundColor = "#600";
-        }, 5500);
-    }, 5000);
+    }, 1000);
 }
 
 function actualizarContador() {
@@ -180,24 +160,27 @@ function type() {
 
 function caerSangre() {
     const s = document.createElement("div");
-    s.classList.add("sangre-caida");
+    s.style.position = "absolute";
+    s.style.background = "#600";
+    s.style.width = "2px";
+    s.style.height = "40px";
     s.style.left = Math.random() * 100 + "vw";
     s.style.top = "-50px";
-    const dur = Math.random() * 1.5 + 1;
-    s.style.animationDuration = dur + "s";
+    s.style.animation = "caer " + (Math.random() * 2 + 1) + "s linear forwards";
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), dur * 1000);
+    setTimeout(() => s.remove(), 3000);
 }
 
 function crearCorazon() {
     const c = document.createElement("div");
-    c.classList.add("corazon");
-    c.innerHTML = Math.random() > 0.5 ? "🖤" : "💔";
+    c.style.position = "absolute";
+    c.style.color = Math.random() > 0.5 ? "#400" : "#600";
+    c.style.fontSize = "2rem";
+    c.innerHTML = "🖤";
     c.style.left = Math.random() * 100 + "vw";
-    const dur = Math.random() * 3 + 4;
-    c.style.animationDuration = dur + "s";
+    c.style.animation = "levitar " + (Math.random() * 3 + 4) + "s linear forwards";
     document.body.appendChild(c);
-    setTimeout(() => c.remove(), dur * 1000);
+    setTimeout(() => c.remove(), 7000);
 }
 </script>
 </body>
