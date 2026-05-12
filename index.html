@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Para Viviana - Siempre Tú</title>
+    <title>Eternidad de Carne - Viviana</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
@@ -35,15 +35,21 @@
 
         .mensaje-final {
             font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px #f00;
+            font-size: 1.9rem; color: #fff; text-shadow: 0 0 20px #f00;
             display: none; animation: fadeIn 3s;
         }
 
-        /* Botón Secreto Inferior Izquierda */
-        #boton-secreto {
-            position: fixed; bottom: 5px; left: 5px; width: 30px; height: 30px;
-            background: rgba(20, 0, 0, 0.3); border: none; cursor: pointer;
-            z-index: 300; display: none; border-radius: 50%;
+        /* BOTÓN CORAZÓN SANGRIENTO */
+        #boton-finalizar {
+            position: fixed; left: 20px; bottom: 50%; transform: translateY(50%);
+            font-size: 3rem; cursor: pointer; z-index: 300; display: none;
+            filter: drop-shadow(0 0 10px #f00); animation: latido 0.8s infinite;
+            background: none; border: none;
+        }
+        #boton-finalizar::after {
+            content: ""; position: absolute; top: 100%; left: 50%;
+            width: 4px; height: 40px; background: #800; border-radius: 50%;
+            animation: goteoBotón 1.5s infinite;
         }
 
         .info-inferior {
@@ -54,25 +60,27 @@
 
         #inundacion {
             position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%;
-            background: #600; z-index: 200; transition: bottom 4s ease-in;
+            background: #500; z-index: 200; transition: bottom 4s ease-in;
         }
 
-        .corazon { position: absolute; font-size: 2.5rem; z-index: 5; animation: levitar linear forwards; }
-        .sangre-caida { position: absolute; background: #600; width: 3px; height: 50px; animation: caer linear forwards; z-index: 5; }
-
+        @keyframes latido { 0%, 100% { scale: 1; } 50% { scale: 1.2; } }
+        @keyframes goteoBotón { 0% { height: 0; opacity: 1; } 100% { height: 60px; opacity: 0; } }
         @keyframes caer { to { transform: translateY(110vh); } }
         @keyframes levitar { 0% { transform: translateY(105vh); opacity: 1; } 100% { transform: translateY(-15vh); opacity: 0; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .corazon { position: absolute; font-size: 2.5rem; z-index: 5; animation: levitar linear forwards; }
+        .sangre-caida { position: absolute; background: #600; width: 3px; height: 50px; animation: caer linear forwards; z-index: 5; }
     </style>
 </head>
 <body>
 
 <div id="inundacion"></div>
-<button id="boton-secreto" onclick="saltarAlFinal()"></button>
+<button id="boton-finalizar" onclick="saltarAlFinal()">❤️</button>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 3rem;">NUESTRO PACTO</h1>
-    <p style="font-family: 'Metal Mania'; color: #333;">(Haz clic, Viviana)</p>
+    <h1 style="font-size: 3rem;">EL BANQUETE DE VIVIANA</h1>
+    <p style="font-family: 'Metal Mania'; color: #333;">(Haz clic para iniciar el sacrificio)</p>
 </div>
 
 <audio id="musica" src="Seven Tears Are Flowing to the River.mp3"></audio>
@@ -88,7 +96,7 @@
 </div>
 
 <script>
-const poema = `No me basta tu nombre, quiero el calcio de tus huesos,
+const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
 astillar tu resistencia con el filo de mis besos.
 Quiero abrirte los costados, hurgar en tu anatomía,
 y que mi hambre sea el mapa de tu dulce agonía.
@@ -108,6 +116,11 @@ donde duermas por siempre, de mi ser empapada.
 No es morir, es fundirse; es un amor de fiera:
 que solo queda el rastro de nuestra dentellada entera.
 
+Mastica mi alma, tritura mis anhelos,
+que mi sangre pinte tus negros desvelos.
+No hay paz en este amor, solo hambre infinita,
+una sed de nosotros que en los huesos habita.
+
 Al final, cuando el plato sea un hueso vacío,
 sabrás que eres yo, y que ya nada es frío.
 Porque amarte, mi vida, es matarte un momento,
@@ -126,29 +139,28 @@ function iniciarRitual() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('caja').style.display = 'block';
     document.getElementById('info').style.display = 'block';
-    document.getElementById('boton-secreto').style.display = 'block';
+    document.getElementById('boton-finalizar').style.display = 'block';
     audio.play();
 
     let i = 0;
     const t = document.getElementById("texto-dinamico");
     function type() {
-        if(i < poema.length) {
-            t.innerHTML += poema.charAt(i); i++;
-            setTimeout(type, 70);
+        if(i < poemaBrutal.length) {
+            t.innerHTML += poemaBrutal.charAt(i); i++;
+            setTimeout(type, 65);
         }
     }
     type();
-    setInterval(caerSangre, 60);
-    setInterval(crearCorazon, 350);
+    setInterval(caerSangre, 50);
+    setInterval(crearCorazon, 300);
     setInterval(actualizarContador, 1000);
 }
 
-function saltarAlFinal() {
-    audio.currentTime = audio.duration - 1; // Salta al último segundo
-}
+function saltarAlFinal() { audio.currentTime = audio.duration - 1; }
 
 audio.onended = function() {
     document.getElementById("texto-dinamico").style.display = "none";
+    document.getElementById("boton-finalizar").style.display = "none";
     const final = document.getElementById("mensaje-final");
     final.style.display = "block";
     final.innerHTML = cartaAmor;
