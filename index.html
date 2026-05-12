@@ -15,15 +15,15 @@
             background-size: cover; background-position: center;
         }
 
-        /* CORTINA DOBLE LENTA (5 SEGUNDOS) */
-        .hoja {
-            position: fixed; top: 0; width: 50.5%; height: 100%;
-            background: #700; z-index: 9000; 
+        /* CORTINA DOBLE REALISTA (5 SEGUNDOS) */
+        .cortina-hoja {
+            position: fixed; top: 0; width: 50%; height: 100%;
+            background: #700; z-index: 9500; 
             transition: transform 5s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 0 50px #000; border-style: solid; border-color: #400;
         }
-        #hoja-izq { left: 0; transform: translateX(-105%); border-right-width: 5px; }
-        #hoja-der { right: 0; transform: translateX(105%); border-left-width: 5px; }
+        #hoja-izq { left: 0; transform: translateX(-100%); border-right-width: 5px; }
+        #hoja-der { right: 0; transform: translateX(100%); border-left-width: 5px; }
 
         #overlay {
             position: fixed; inset: 0; background: #000; z-index: 7000;
@@ -55,8 +55,8 @@
         .nota-final { display: none; font-family: 'Crimson Text', serif; font-style: italic; font-size: 1.9rem; color: #fff; text-shadow: 0 0 15px #f00; }
 
         #frase-ingles {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 9500; display: none; font-family: 'Great Vibes', cursive; 
+            position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 9000; display: none; font-family: 'Great Vibes', cursive; 
             font-size: 3.5rem; color: #fff; font-weight: bold;
             text-shadow: 0 0 25px #f00, 0 0 45px #000; text-align: center; width: 90%;
         }
@@ -68,18 +68,30 @@
             transition: opacity 1.5s ease-in-out;
         }
 
+        /* CORAZONES FINALES */
+        .corazon-final {
+            position: fixed; bottom: -50px; font-size: 2rem;
+            z-index: 8500; animation: subirCorazon 8s linear forwards;
+            filter: drop-shadow(0 0 10px #f00);
+        }
+
+        @keyframes subirCorazon {
+            0% { transform: translateY(0); opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-92vh); opacity: 1; } /* Se quedan arriba */
+        }
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         @keyframes aparecerYQuedar { 0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 100% { opacity: 1; transform: scale(1) rotate(var(--r)); } }
     </style>
 </head>
 <body>
 
-<div id="hoja-izq" class="hoja"></div>
-<div id="hoja-der" class="hoja"></div>
+<div id="hoja-izq" class="cortina-hoja"></div>
+<div id="hoja-der" class="cortina-hoja"></div>
 <div id="frase-ingles"></div>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 2.2rem;">TODO ESTO ES POR TI MI AMOR</h1>
+    <h1 style="font-size: 2.2rem;">PARA TI MI AMOR</h1>
     <p style="color: #444; font-family: 'Metal Mania'; font-size: 1.5rem; margin-top: 15px;">TÓCAME</p>
 </div>
 
@@ -100,7 +112,6 @@ const misFotos = [];
 for (let n = 1; n <= 27; n++) { misFotos.push(`FOTOS/foto (${n}).jpg`); }
 const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
 
-const poemaTexto = `No me basta tu nombre, quiero el calcio de tus huesos, astillar tu resistencia con el filo de mis besos. Quiero abrirte los costados, hurgar en tu anatomía, y que mi hambre sea el mapa de tu dulce agonía...`;
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
 const fraseFinalIngles = "If you swear to love me, I swear to stay";
 const audio = document.getElementById('musica');
@@ -116,6 +127,8 @@ function iniciarRitual() {
 function ritualConCortina() {
     const izq = document.getElementById('hoja-izq');
     const der = document.getElementById('hoja-der');
+    
+    // 1. Cierran lento (5 seg)
     izq.style.transform = 'translateX(0)';
     der.style.transform = 'translateX(0)';
 
@@ -126,24 +139,20 @@ function ritualConCortina() {
         const nota = document.getElementById("nota-final");
         nota.style.display = "block"; nota.innerHTML = cartaAmor;
 
+        // 2. Abren lento
         setTimeout(() => {
-            izq.style.transform = 'translateX(-105%)';
-            der.style.transform = 'translateX(105%)';
-            
-            // ORDEN CORREGIDO: Primero espera para leer la carta, luego fotos
+            izq.style.transform = 'translateX(-100%)';
+            der.style.transform = 'translateX(100%)';
             iniciarSecuenciaFotos();
         }, 1000);
     }, 5000); 
 }
 
 function iniciarSecuenciaFotos() {
-    // 15 segundos para leer la carta
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
             setTimeout(() => crearFoto(ruta, index), index * 2000);
         });
-
-        // Al terminar todas las fotos + 2 segundos, desvanecer todo
         const tiempoFinalFotos = (fotosMezcladas.length * 2000) + 2000;
         setTimeout(desvanecimientoFinal, tiempoFinalFotos);
     }, 15000); 
@@ -153,20 +162,29 @@ function desvanecimientoFinal() {
     const fotos = document.querySelectorAll('.foto-nosotros');
     const caja = document.getElementById('caja');
 
-    // Desvanecer fotos una a una rápido
+    // 1. Desaparecen fotos una por una
     fotos.forEach((foto, i) => {
         setTimeout(() => { foto.style.opacity = '0'; }, i * 150);
     });
 
-    // Desvanecer la carta y mostrar texto final
+    // 2. Se va la carta y aparece el mensaje + corazones
     setTimeout(() => {
         caja.style.opacity = '0';
         setTimeout(() => {
             const fraseDiv = document.getElementById("frase-ingles");
             fraseDiv.style.display = "block";
             escribirFraseFinal(fraseDiv, fraseFinalIngles);
+            setInterval(lanzarCorazonFinal, 400); // Lluvia de corazones hacia arriba
         }, 2000);
-    }, (fotos.length * 150) + 500);
+    }, (fotos.length * 150) + 1000);
+}
+
+function lanzarCorazonFinal() {
+    const c = document.createElement("div");
+    c.classList.add("corazon-final");
+    c.innerHTML = Math.random() > 0.5 ? "❤️" : "🖤";
+    c.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(c);
 }
 
 function escribirFraseFinal(elemento, texto) {
@@ -195,9 +213,10 @@ function crearFoto(rutaArchivo, index) {
 
 function typePoema() {
     let i = 0; const tDiv = document.getElementById("texto-dinamico");
+    const p = "No me basta tu nombre, quiero el calcio de tus huesos, astillar tu resistencia con el filo de mis besos...";
     function t() {
-        if(i < poemaTexto.length) {
-            tDiv.innerHTML += poemaTexto.charAt(i); i++;
+        if(i < p.length) {
+            tDiv.innerHTML += p.charAt(i); i++;
             setTimeout(t, 70);
         }
     }
@@ -206,4 +225,3 @@ function typePoema() {
 </script>
 </body>
 </html>
-
