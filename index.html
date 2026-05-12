@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<!-- Versión Actualizada 2.1 - Bypass Caché -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Viviana - 4 Años</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Viviana - 4 Años</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            background: #000; overflow: hidden; height: 100vh;
+            background: #000; overflow: hidden; height: 100vh; width: 100vw;
             display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(circle, transparent 0%, #000 95%), 
                               url('https://unsplash.com');
@@ -17,69 +17,81 @@
             font-family: 'Metal Mania', cursive;
         }
 
+        /* Pantalla de inicio */
         #overlay {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center;
+            cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center; padding: 20px;
         }
 
+        /* Botón Corazón Sorpresa */
         .boton-contenedor {
-            position: fixed; left: 40px; bottom: 50%; transform: translateY(50%);
+            position: fixed; left: 20px; bottom: 20px;
             display: none; flex-direction: column; align-items: center; z-index: 1500;
         }
-        
         #boton-finalizar {
-            font-size: 5rem; cursor: pointer; background: none; border: none;
+            font-size: 4rem; cursor: pointer; background: none; border: none;
             color: #800; filter: drop-shadow(0 0 15px #f00);
             animation: latido 0.8s infinite; line-height: 1;
         }
 
+        /* Contenedor de Texto (Adaptado a móvil) */
         .contenedor-principal {
-            z-index: 100; width: 90%; max-width: 800px; height: 75vh;
-            background: rgba(0,0,0,0.96); padding: 40px; border: 2px solid #600;
+            z-index: 100; width: 90%; max-width: 600px; max-height: 70vh;
+            background: rgba(0,0,0,0.96); padding: 25px; border: 2px solid #600;
             box-shadow: 0 0 80px #900; border-radius: 20px; 
             display: none; text-align: center; overflow-y: auto;
-            scrollbar-width: none; -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         .contenedor-principal::-webkit-scrollbar { display: none; }
 
         #texto-dinamico, .nota-final {
-            font-size: 1.25rem; font-family: 'Nosifer'; color: #b00;
-            line-height: 1.7; text-shadow: 0 0 20px #000; white-space: pre-wrap;
+            font-size: 1.1rem; font-family: 'Nosifer'; color: #b00;
+            line-height: 1.6; text-shadow: 0 0 15px #000; white-space: pre-wrap;
         }
 
         .nota-final {
             display: none; font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 1.85rem; color: #fff; text-shadow: 0 0 15px #f00;
+            font-size: 1.6rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
+        /* Contador (Adaptado a móvil) */
         .info-inferior {
-            position: fixed; bottom: 20px; right: 20px;
-            color: #800; font-size: 1.2rem; z-index: 1500; display: none; text-align: right;
+            position: fixed; top: 15px; right: 15px;
+            color: #800; font-size: 0.9rem; z-index: 1500; display: none; text-align: right;
         }
-        #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
+        #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.7rem; margin-top: 5px; }
 
+        /* Fotos (Tamaño optimizado para móvil) */
         .foto-nosotros {
-            position: absolute; width: 220px; height: auto; border: 4px solid #fff;
-            box-shadow: 0 0 30px rgba(255,255,255,0.8); border-radius: 5px;
+            position: absolute; width: 140px; height: auto; border: 3px solid #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.7); border-radius: 5px;
             z-index: 1000; pointer-events: none; opacity: 0;
             animation: aparecerYQuedar 3s forwards;
         }
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        @keyframes aparecerYQuedar { 0% { opacity: 0; transform: scale(0.3) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
+        @keyframes aparecerYQuedar { 0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
+        
+        /* Ajuste para pantallas grandes (PC) */
+        @media (min-width: 768px) {
+            #texto-dinamico, .nota-final { font-size: 1.4rem; }
+            .foto-nosotros { width: 200px; }
+            .boton-contenedor { left: 40px; bottom: 50%; transform: translateY(50%); }
+            .info-inferior { top: auto; bottom: 20px; font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 2rem;">TODO ESTO ES POR TI MI AMOR</h1>
-    <p style="font-size: 1.2rem; color: #444; margin-top: 15px;">TÓCAME</p>
+    <h1 style="font-size: 1.8rem;">TODO ESTO ES POR TI MI AMOR</h1>
+    <p style="font-size: 1rem; color: #444; margin-top: 15px;">TÓCAME</p>
 </div>
 
 <div class="boton-contenedor" id="btn-container">
     <button id="boton-finalizar" onclick="ritualFinal()">❤</button>
-    <div style="color:#600; margin-top:10px;">SORPRESA</div>
+    <div style="color:#600; margin-top:5px; font-size: 0.8rem;">SORPRESA</div>
 </div>
 
 <audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
@@ -90,12 +102,12 @@
 </div>
 
 <div class="info-inferior" id="info">
-    TE AMO VIVIANA<br>GRACIAS POR ESTOS 4 AÑOS
+    TE AMO VIVIANA<br>FELICES 4 AÑOS
     <div id="contador"></div>
 </div>
 
 <script>
-// USANDO EL NOMBRE EXACTO CON PARÉNTESIS QUE VIMOS EN TU CAPTURA
+// Generar rutas de fotos automáticas
 const misFotos = [];
 for (let n = 1; n <= 27; n++) {
     misFotos.push(`FOTOS/foto (${n}).jpg`);
@@ -108,24 +120,7 @@ Quiero abrirte los costados, hurgar en tu anatomía,
 y que mi hambre sea el mapa de tu dulce agonía.
 
 Te amo con la rabia del que muere de ayuno,
-buscando en tus entrañas un refugio oportuno.
-Quiero morder tu aorta, beberme tu latido,
-que tu pulso y mi lengua compartan el nido.
-
-Eres mi hostia de carne, mi banquete de nervios,
-te devoro en silencio, sin ritos soberbios.
-Arrancarte los ojos para que veas por los míos,
-y saciar con tu linfa mis eternos hastíos.
-
-Que mi estómago sea tu tumba sagrada,
-donde duermas por siempre, de mi ser empapada.
-No es morir, es fundirse; es un amor de fiera:
-que solo queda el rastro de nuestra dentellada entera.
-
-Al final, cuando el plato sea un hueso vacío,
-sabrás que eres yo, y que ya nada es frío.
-Porque amarte, mi vida, es matarte un momento,
-para que seas mi sangre, mi luz y mi aliento.`;
+buscando en tus entrañas un refugio oportuno...`;
 
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
 
@@ -152,7 +147,8 @@ function ritualFinal() {
     
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
-            setTimeout(() => crearFoto(ruta), index * 800);
+            // FOTOS MÁS LENTAS: una cada 1.5 segundos
+            setTimeout(() => crearFoto(ruta), index * 1500);
         });
     }, 15000); 
 }
@@ -172,9 +168,14 @@ function crearFoto(rutaArchivo) {
     const img = document.createElement("img");
     img.src = rutaArchivo + "?v=" + new Date().getTime();
     img.className = "foto-nosotros";
-    img.style.left = (Math.random() * 70 + 5) + "vw";
-    img.style.top = (Math.random() * 70 + 5) + "vh";
-    img.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+    
+    // Ocupar toda la pantalla de forma aleatoria
+    img.style.left = (Math.random() * 70) + "vw";
+    img.style.top = (Math.random() * 75) + "vh";
+    
+    const rot = Math.random() * 40 - 20;
+    img.style.transform = `rotate(${rot}deg)`;
+    
     img.onerror = function() { this.style.display = 'none'; };
     document.body.appendChild(img);
 }
@@ -183,10 +184,9 @@ let i = 0;
 function type() {
     if(i < poemaBrutal.length) {
         document.getElementById("texto-dinamico").innerHTML += poemaBrutal.charAt(i); i++;
-        setTimeout(type, 70);
+        setTimeout(type, 75);
     }
 }
 </script>
 </body>
 </html>
-
