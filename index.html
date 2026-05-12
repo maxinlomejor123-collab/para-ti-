@@ -1,21 +1,24 @@
 <!DOCTYPE html>
+<!-- Versión Actualizada 2.1 - Bypass Caché -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Para Viviana</title>
+    <title>Viviana - 4 Años</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            margin: 0; background: #000; overflow: hidden; height: 100vh;
+            background: #000; overflow: hidden; height: 100vh;
             display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(circle, transparent 0%, #000 95%), 
                               url('https://unsplash.com');
             background-size: cover; background-position: center;
-            animation: glitch 4s infinite; cursor: crosshair;
+            font-family: 'Metal Mania', cursive;
         }
 
         #overlay {
-            position: fixed; inset: 0; background: #000; z-index: 2000;
+            position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             cursor: pointer; font-family: 'Nosifer'; color: #800; text-align: center;
         }
@@ -32,28 +35,27 @@
         }
 
         .contenedor-principal {
-            z-index: 100; width: 90%; max-width: 800px; max-height: 80vh;
-            background: rgba(0,0,0,0.95); padding: 30px; border: 2px solid #600;
-            box-shadow: 0 0 100px #900; border-radius: 15px; 
+            z-index: 100; width: 90%; max-width: 800px; height: 75vh;
+            background: rgba(0,0,0,0.96); padding: 40px; border: 2px solid #600;
+            box-shadow: 0 0 80px #900; border-radius: 20px; 
             display: none; text-align: center; overflow-y: auto;
-            scrollbar-width: none; -ms-overflow-style: none; /* Quita barra en Firefox/IE */
+            scrollbar-width: none; -ms-overflow-style: none;
         }
-        .contenedor-principal::-webkit-scrollbar { display: none; } /* Quita barra en Chrome/Safari */
+        .contenedor-principal::-webkit-scrollbar { display: none; }
 
         #texto-dinamico, .nota-final {
-            font-size: 1.3rem; font-family: 'Nosifer'; color: #b00;
-            line-height: 1.6; text-shadow: 0 0 20px #000; white-space: pre-wrap;
+            font-size: 1.25rem; font-family: 'Nosifer'; color: #b00;
+            line-height: 1.7; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
 
         .nota-final {
             display: none; font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px #f00;
+            font-size: 1.85rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
-            font-family: 'Metal Mania'; color: #800; font-size: 1.2rem;
-            z-index: 1500; display: none; text-align: right;
+            color: #800; font-size: 1.2rem; z-index: 1500; display: none; text-align: right;
         }
         #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
 
@@ -66,19 +68,18 @@
 
         @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         @keyframes aparecerYQuedar { 0% { opacity: 0; transform: scale(0.3) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
-        @keyframes glitch { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.05); } }
     </style>
 </head>
 <body>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 2.2rem;">TODO ESTO ES POR TI MI AMOR</h1>
-    <p style="font-family: 'Metal Mania'; color: #444; font-size: 1.2rem;">TÓCAME</p>
+    <h1 style="font-size: 2rem;">TODO ESTO ES POR TI MI AMOR</h1>
+    <p style="font-size: 1.2rem; color: #444; margin-top: 15px;">TÓCAME</p>
 </div>
 
 <div class="boton-contenedor" id="btn-container">
     <button id="boton-finalizar" onclick="ritualFinal()">❤</button>
-    <div style="color:#600; font-family:'Metal Mania'; margin-top:10px;">SORPRESA</div>
+    <div style="color:#600; margin-top:10px;">SORPRESA</div>
 </div>
 
 <audio id="musica" src="Seven Tears Are Flowing to the River.mp3" loop></audio>
@@ -94,7 +95,7 @@
 </div>
 
 <script>
-// Lógica para las 27 fotos
+// USANDO EL NOMBRE EXACTO CON PARÉNTESIS QUE VIMOS EN TU CAPTURA
 const misFotos = [];
 for (let n = 1; n <= 27; n++) {
     misFotos.push(`FOTOS/foto (${n}).jpg`);
@@ -151,7 +152,7 @@ function ritualFinal() {
     
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
-            setTimeout(() => crearFoto(ruta), index * 700);
+            setTimeout(() => crearFoto(ruta), index * 800);
         });
     }, 15000); 
 }
@@ -169,23 +170,12 @@ function actualizarContador() {
 
 function crearFoto(rutaArchivo) {
     const img = document.createElement("img");
-    img.src = rutaArchivo;
+    img.src = rutaArchivo + "?v=" + new Date().getTime();
     img.className = "foto-nosotros";
     img.style.left = (Math.random() * 70 + 5) + "vw";
     img.style.top = (Math.random() * 70 + 5) + "vh";
     img.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
-    
-    // Intento de carga blindado: si falla .jpg, prueba .JPG
-    img.onerror = function() {
-        if (this.src.includes('.jpg')) {
-            this.src = this.src.replace('.jpg', '.JPG');
-        } else if (this.src.includes('.JPG')) {
-            this.src = this.src.replace('.JPG', '.JPEG');
-        } else {
-            this.style.display = 'none';
-        }
-    };
-    
+    img.onerror = function() { this.style.display = 'none'; };
     document.body.appendChild(img);
 }
 
@@ -199,3 +189,4 @@ function type() {
 </script>
 </body>
 </html>
+
