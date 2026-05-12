@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Para Viviana - 4 Años</title>
+    <title>Para Viviana</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         body {
@@ -26,36 +26,37 @@
         }
         
         #boton-finalizar {
-            font-size: 5.5rem; cursor: pointer; background: none; border: none;
+            font-size: 5rem; cursor: pointer; background: none; border: none;
             color: #800; filter: drop-shadow(0 0 15px #f00);
             animation: latido 0.8s infinite; line-height: 1;
         }
 
         .contenedor-principal {
-            z-index: 100; width: 85%; max-width: 700px; max-height: 70vh;
-            background: rgba(0,0,0,0.95); padding: 40px; border: 2px solid #600;
+            z-index: 100; width: 90%; max-width: 800px; max-height: 80vh;
+            background: rgba(0,0,0,0.95); padding: 30px; border: 2px solid #600;
             box-shadow: 0 0 100px #900; border-radius: 15px; 
             display: none; text-align: center; overflow-y: auto;
+            scrollbar-width: none; -ms-overflow-style: none; /* Quita barra en Firefox/IE */
         }
+        .contenedor-principal::-webkit-scrollbar { display: none; } /* Quita barra en Chrome/Safari */
 
         #texto-dinamico, .nota-final {
-            font-size: 1.4rem; font-family: 'Nosifer'; color: #b00;
-            line-height: 1.8; text-shadow: 0 0 20px #000; white-space: pre-wrap;
+            font-size: 1.3rem; font-family: 'Nosifer'; color: #b00;
+            line-height: 1.6; text-shadow: 0 0 20px #000; white-space: pre-wrap;
         }
 
         .nota-final {
             display: none; font-family: 'Crimson Text', serif; font-style: italic;
-            font-size: 2rem; color: #fff; text-shadow: 0 0 15px #f00;
+            font-size: 1.8rem; color: #fff; text-shadow: 0 0 15px #f00;
         }
 
         .info-inferior {
             position: fixed; bottom: 20px; right: 20px;
-            font-family: 'Metal Mania'; color: #800; font-size: 1.3rem;
+            font-family: 'Metal Mania'; color: #800; font-size: 1.2rem;
             z-index: 1500; display: none; text-align: right;
         }
         #contador { color: #f00; font-family: 'Nosifer'; font-size: 0.8rem; margin-top: 5px; }
 
-        /* FOTOS (Se quedan fijas con opacity 1 al final) */
         .foto-nosotros {
             position: absolute; width: 220px; height: auto; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(255,255,255,0.8); border-radius: 5px;
@@ -63,22 +64,16 @@
             animation: aparecerYQuedar 3s forwards;
         }
 
-        @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        
-        /* Animación para que las fotos aparezcan y se queden */
-        @keyframes aparecerYQuedar { 
-            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); } 
-            100% { opacity: 1; transform: scale(1) rotate(0deg); } 
-        }
-
-        @keyframes glitch { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.1) brightness(0.9); } }
+        @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes aparecerYQuedar { 0% { opacity: 0; transform: scale(0.3) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
+        @keyframes glitch { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.05); } }
     </style>
 </head>
 <body>
 
 <div id="overlay" onclick="iniciarRitual()">
-    <h1 style="font-size: 2.5rem;">TODO ESTO ES POR TI MI AMOR</h1>
-    <p style="font-family: 'Metal Mania'; color: #444; font-size: 1.5rem;">TÓCAME</p>
+    <h1 style="font-size: 2.2rem;">TODO ESTO ES POR TI MI AMOR</h1>
+    <p style="font-family: 'Metal Mania'; color: #444; font-size: 1.2rem;">TÓCAME</p>
 </div>
 
 <div class="boton-contenedor" id="btn-container">
@@ -99,12 +94,11 @@
 </div>
 
 <script>
-// Generar rutas: FOTOS/foto (1).jpg hasta FOTOS/foto (27).jpg
+// Lógica para las 27 fotos
 const misFotos = [];
 for (let n = 1; n <= 27; n++) {
     misFotos.push(`FOTOS/foto (${n}).jpg`);
 }
-// Mezclamos el orden para que siempre sea sorpresa
 const fotosMezcladas = misFotos.sort(() => Math.random() - 0.5);
 
 const poemaBrutal = `No me basta tu nombre, quiero el calcio de tus huesos,
@@ -113,7 +107,24 @@ Quiero abrirte los costados, hurgar en tu anatomía,
 y que mi hambre sea el mapa de tu dulce agonía.
 
 Te amo con la rabia del que muere de ayuno,
-buscando en tus entrañas un refugio oportuno...`;
+buscando en tus entrañas un refugio oportuno.
+Quiero morder tu aorta, beberme tu latido,
+que tu pulso y mi lengua compartan el nido.
+
+Eres mi hostia de carne, mi banquete de nervios,
+te devoro en silencio, sin ritos soberbios.
+Arrancarte los ojos para que veas por los míos,
+y saciar con tu linfa mis eternos hastíos.
+
+Que mi estómago sea tu tumba sagrada,
+donde duermas por siempre, de mi ser empapada.
+No es morir, es fundirse; es un amor de fiera:
+que solo queda el rastro de nuestra dentellada entera.
+
+Al final, cuando el plato sea un hueso vacío,
+sabrás que eres yo, y que ya nada es frío.
+Porque amarte, mi vida, es matarte un momento,
+para que seas mi sangre, mi luz y mi aliento.`;
 
 const cartaAmor = `Viviana, lo nuestro fue lo más inesperado y hermoso que me pudo pasar. Desde aquellos días a los 15 años cuando todo empezó, hasta hoy, mi mundo no ha dejado de girar en torno a ti. Han pasado casi 4 años y quiero que sepas que, sin importar cuánto tiempo pase, jamás dejaré de verte con estos mismos ojos de amor, porque eres y serás siempre el latido que me mantiene vivo.`;
 
@@ -130,22 +141,17 @@ function iniciarRitual() {
 }
 
 function ritualFinal() {
-    audio.currentTime = 0; // Reinicia la canción
+    audio.currentTime = 0;
     audio.play();
-    
-    // Limpia el poema y quita el botón
     document.getElementById("texto-dinamico").style.display = "none";
     document.getElementById("btn-container").style.display = "none";
-    
-    // Muestra la carta de amor
     const nota = document.getElementById("nota-final");
     nota.style.display = "block";
     nota.innerHTML = cartaAmor;
     
-    // Espera 15 segundos y empieza a soltar las fotos que se quedarán fijas
     setTimeout(() => {
         fotosMezcladas.forEach((ruta, index) => {
-            setTimeout(() => crearFoto(ruta), index * 600);
+            setTimeout(() => crearFoto(ruta), index * 700);
         });
     }, 15000); 
 }
@@ -165,17 +171,20 @@ function crearFoto(rutaArchivo) {
     const img = document.createElement("img");
     img.src = rutaArchivo;
     img.className = "foto-nosotros";
+    img.style.left = (Math.random() * 70 + 5) + "vw";
+    img.style.top = (Math.random() * 70 + 5) + "vh";
+    img.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
     
-    // Posiciones aleatorias por toda la pantalla
-    img.style.left = (Math.random() * 75 + 2) + "vw";
-    img.style.top = (Math.random() * 75 + 2) + "vh";
-    
-    // Rotación aleatoria para que parezcan fotos tiradas
-    const rot = Math.random() * 40 - 20;
-    img.style.transform = `rotate(${rot}deg)`;
-    
-    // Si la foto no existe o tiene error, no muestra nada
-    img.onerror = function() { this.style.display = 'none'; };
+    // Intento de carga blindado: si falla .jpg, prueba .JPG
+    img.onerror = function() {
+        if (this.src.includes('.jpg')) {
+            this.src = this.src.replace('.jpg', '.JPG');
+        } else if (this.src.includes('.JPG')) {
+            this.src = this.src.replace('.JPG', '.JPEG');
+        } else {
+            this.style.display = 'none';
+        }
+    };
     
     document.body.appendChild(img);
 }
